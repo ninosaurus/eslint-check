@@ -6,7 +6,7 @@ const {
 
 console.log(process.env);
 
-const repo = 'FishingBookerCom/fishingbooker';
+const repo = 'fishingbooker';
 const owner = 'FishingBookerCom';
 const checkName = 'ESLint check';
 
