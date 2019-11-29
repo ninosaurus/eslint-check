@@ -1,22 +1,13 @@
-const fs = require('fs');
 const request = require('./request');
 
 const {
-  GITHUB_SHA, GITHUB_EVENT_PATH, GITHUB_TOKEN, GITHUB_WORKSPACE
+  GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE
 } = process.env;
 
 console.log(process.env);
-const eventContent = fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8');
 
-console.log(eventContent);
-// eslint-disable-next-line import/no-dynamic-require
-const event = require(GITHUB_EVENT_PATH);
-const { repository } = event;
-const {
-  owner: { login: owner }
-} = repository;
-const { name: repo } = repository;
-
+const repo = 'FishingBookerCom/fishingbooker';
+const owner = 'FishingBookerCom';
 const checkName = 'ESLint check';
 
 const headers = {
