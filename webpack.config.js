@@ -1,5 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
+
 module.exports = (env, argv) => {
   const config = {
     entry: {

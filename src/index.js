@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { CLIEngine } from 'eslint';
 
 const { readdirSync } = require('fs');
 const request = require('./request');
@@ -50,7 +51,6 @@ async function createCheck() {
 
 function eslint() {
   // eslint-disable-next-line global-require,import/no-dynamic-require
-  const { CLIEngine } = require('eslint');
 
   const cli = CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
