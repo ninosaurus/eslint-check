@@ -50,7 +50,7 @@ async function createCheck() {
 
 function eslint() {
   // eslint-disable-next-line global-require,import/no-dynamic-require
-  const { CLIEngine } = require(join(process.cwd(), 'node_modules/eslint'));
+  const { CLIEngine } = require('eslint');
 
   const cli = CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
