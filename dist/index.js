@@ -56,7 +56,7 @@ function eslint() {
 
   const cli = new eslint.CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
-    ignorePath: ".gitignore"
+    ignorePath: '.gitignore'
   });
   const report = cli.executeOnFiles(['.']); // fixableErrorCount, fixableWarningCount are available too
 
@@ -130,8 +130,8 @@ function exitWithError(err) {
 }
 
 async function run() {
-  const ms = core.getInput('milliseconds');
   const id = await createCheck();
+  console.log(GITHUB_WORKSPACE);
 
   try {
     const {
