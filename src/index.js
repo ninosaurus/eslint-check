@@ -109,8 +109,8 @@ function exitWithError(err) {
 }
 
 async function run() {
+  console.log(process.env);
   const id = await createCheck();
-  console.log(GITHUB_WORKSPACE);
   try {
     const { conclusion, output } = eslint();
     console.log(output.summary);
