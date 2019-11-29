@@ -1,11 +1,14 @@
+import { join } from 'path';
+
 const request = require('./request');
 
 const {
   GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE
 } = process.env;
 
-console.log(process.env);
+console.log(process.cwd());
 process.chdir('./application');
+console.log(process.cwd());
 const repo = 'fishingbooker';
 const owner = 'FishingBookerCom';
 const checkName = 'ESLint check';
@@ -36,9 +39,9 @@ async function createCheck() {
 
 function eslint() {
   // eslint-disable-next-line global-require
-  const eslint = require('eslint');
+  const { CLIEngine } = import(join(process.cwd(), 'node_modules/eslint'));
 
-  const cli = new eslint.CLIEngine({
+  const cli = CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
     ignorePath: '.gitignore'
   });
