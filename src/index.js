@@ -1,14 +1,23 @@
 import { join } from 'path';
 
+const { readdirSync } = require('fs');
 const request = require('./request');
+
 
 const {
   GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE
 } = process.env;
 
-console.log(process.cwd());
+const getDirectories = source => readdirSync(source, { withFileTypes: true })
+  .filter(dirent => dirent.isDirectory())
+  .map(dirent => dirent.name);
+
+console.log(process.cwd(), getDirectories(process.cwd())
+  .join(', '));
 process.chdir('./application');
-console.log(process.cwd());
+console.log(process.cwd(), getDirectories(process.cwd())
+  .join(', '));
+
 const repo = 'fishingbooker';
 const owner = 'FishingBookerCom';
 const checkName = 'ESLint check';
