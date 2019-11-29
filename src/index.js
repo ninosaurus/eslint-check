@@ -17,6 +17,8 @@ console.log(process.cwd(), getDirectories(process.cwd())
 process.chdir('./application');
 console.log(process.cwd(), getDirectories(process.cwd())
   .join(', '));
+console.log(join(process.cwd(), 'node_modules'), getDirectories(join(process.cwd(), 'node_modules'))
+  .join(', '));
 
 const repo = 'fishingbooker';
 const owner = 'FishingBookerCom';
@@ -47,8 +49,8 @@ async function createCheck() {
 }
 
 function eslint() {
-  // eslint-disable-next-line global-require
-  const { CLIEngine } = import(join(process.cwd(), 'node_modules/eslint'));
+  // eslint-disable-next-line global-require,import/no-dynamic-require
+  const { CLIEngine } = require(join(process.cwd(), 'node_modules/eslint'));
 
   const cli = CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
