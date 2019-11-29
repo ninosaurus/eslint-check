@@ -43,7 +43,7 @@ function eslint() {
 
   const cli = new eslint.CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
-    ignorePath: ".gitignore"
+    ignorePath: '.gitignore'
   });
   const report = cli.executeOnFiles(['.']);
   // fixableErrorCount, fixableWarningCount are available too
