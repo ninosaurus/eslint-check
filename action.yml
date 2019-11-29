@@ -1,7 +1,7 @@
 name: 'Eslint checker'
 description: 'Wait a designated number of milliseconds'
 inputs:
-  milliseconds:  # id of input
+  repo-token:  # id of input
     description: 'number of milliseconds to wait'
     required: true
     default: '1000'
@@ -10,4 +10,4 @@ outputs:
     description: 'The message to output'
 runs:
   using: 'node12'
-  main: './dist/index.js'
+  main: './dist/bundle.js'
