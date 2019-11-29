@@ -5,7 +5,7 @@ const {
 } = process.env;
 
 console.log(process.env);
-
+process.chdir('./application');
 const repo = 'fishingbooker';
 const owner = 'FishingBookerCom';
 const checkName = 'ESLint check';
