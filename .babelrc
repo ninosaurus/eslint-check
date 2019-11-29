@@ -1,0 +1,17 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "entry",
+        "corejs": 2,
+        "targets": {
+          "browsers": [
+            "last 1 version",
+            "ie >= 11"
+          ]
+        }
+      }
+    ]
+  ]
+}
