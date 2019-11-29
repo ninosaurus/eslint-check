@@ -1,5 +1,9 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
 var request = require('./request');
 
 var _process$env = process.env,
@@ -24,7 +28,7 @@ var headers = {
 function createCheck() {
   var body, _ref, data, id;
 
-  return regeneratorRuntime.async(function createCheck$(_context) {
+  return _regenerator.default.async(function createCheck$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
@@ -35,7 +39,7 @@ function createCheck() {
             started_at: new Date()
           };
           _context.next = 3;
-          return regeneratorRuntime.awrap(request("https://api.github.com/repos/".concat(owner, "/").concat(repo, "/check-runs"), {
+          return _regenerator.default.awrap(request("https://api.github.com/repos/".concat(owner, "/").concat(repo, "/check-runs"), {
             method: 'POST',
             headers: headers,
             body: body
@@ -144,7 +148,7 @@ function eslint() {
 
 function updateCheck(id, conclusion, output) {
   var body;
-  return regeneratorRuntime.async(function updateCheck$(_context2) {
+  return _regenerator.default.async(function updateCheck$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
@@ -157,7 +161,7 @@ function updateCheck(id, conclusion, output) {
             output: output
           };
           _context2.next = 3;
-          return regeneratorRuntime.awrap(request("https://api.github.com/repos/".concat(owner, "/").concat(repo, "/check-runs/").concat(id), {
+          return _regenerator.default.awrap(request("https://api.github.com/repos/".concat(owner, "/").concat(repo, "/check-runs/").concat(id), {
             method: 'PATCH',
             headers: headers,
             body: body
@@ -184,13 +188,13 @@ function exitWithError(err) {
 function run() {
   var ms, id, _eslint, conclusion, output;
 
-  return regeneratorRuntime.async(function run$(_context3) {
+  return _regenerator.default.async(function run$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
           ms = core.getInput('milliseconds');
           _context3.next = 3;
-          return regeneratorRuntime.awrap(createCheck());
+          return _regenerator.default.awrap(createCheck());
 
         case 3:
           id = _context3.sent;
@@ -198,7 +202,7 @@ function run() {
           _eslint = eslint(), conclusion = _eslint.conclusion, output = _eslint.output;
           console.log(output.summary);
           _context3.next = 9;
-          return regeneratorRuntime.awrap(updateCheck(id, conclusion, output));
+          return _regenerator.default.awrap(updateCheck(id, conclusion, output));
 
         case 9:
           if (conclusion === 'failure') {
@@ -212,7 +216,7 @@ function run() {
           _context3.prev = 12;
           _context3.t0 = _context3["catch"](4);
           _context3.next = 16;
-          return regeneratorRuntime.awrap(updateCheck(id, 'failure'));
+          return _regenerator.default.awrap(updateCheck(id, 'failure'));
 
         case 16:
           exitWithError(_context3.t0);

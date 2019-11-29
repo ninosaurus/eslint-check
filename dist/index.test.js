@@ -1,5 +1,9 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
 var process = require('process');
 
 var cp = require('child_process');
@@ -9,12 +13,12 @@ var path = require('path');
 var wait = require('./wait');
 
 test('throws invalid number', function _callee() {
-  return regeneratorRuntime.async(function _callee$(_context) {
+  return _regenerator.default.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.next = 2;
-          return regeneratorRuntime.awrap(expect(wait('foo')).rejects.toThrow('milleseconds not a number'));
+          return _regenerator.default.awrap(expect(wait('foo')).rejects.toThrow('milleseconds not a number'));
 
         case 2:
         case "end":
@@ -25,13 +29,13 @@ test('throws invalid number', function _callee() {
 });
 test('wait 500 ms', function _callee2() {
   var start, end, delta;
-  return regeneratorRuntime.async(function _callee2$(_context2) {
+  return _regenerator.default.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           start = new Date();
           _context2.next = 3;
-          return regeneratorRuntime.awrap(wait(500));
+          return _regenerator.default.awrap(wait(500));
 
         case 3:
           end = new Date();
