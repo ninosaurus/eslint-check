@@ -16,4 +16,4 @@ jobs:
     - run: npm test
     - uses: ./
       with:
-        milliseconds: 1000
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
