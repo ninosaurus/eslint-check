@@ -4,19 +4,18 @@ const wait = require('./wait');
 
 // most @actions toolkit packages have async methods
 async function run() {
-  try { 
+  try {
     const ms = core.getInput('milliseconds');
-    console.log(`Waiting ${ms} milliseconds ...`)
+    console.log(`Waiting ${ms} milliseconds ...`);
 
-    core.debug((new Date()).toTimeString())
-    wait(parseInt(ms));
-    core.debug((new Date()).toTimeString())
+    core.debug((new Date()).toTimeString());
+    wait(parseInt(ms, 10));
+    core.debug((new Date()).toTimeString());
 
     core.setOutput('time', new Date().toTimeString());
-  } 
-  catch (error) {
+  } catch (error) {
     core.setFailed(error.message);
   }
 }
 
-run()
+run();
