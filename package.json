@@ -1,35 +1,37 @@
 {
-  "name": "javascript-action",
+  "name": "eslint-check",
   "version": "1.0.0",
-  "description": "JavaScript Action Template",
-  "main": "index.js",
+  "description": "Eslint check action",
+  "main": "/dist/index.js",
   "scripts": {
-    "lint": "eslint index.js",
-    "package": "ncc build index.js -o dist",
-    "test": "eslint index.js && jest"
+    "lint": "eslint ./src/index.js",
+    "package": "ncc build /src/index.js -o dist",
+    "test": "eslint ./src/index.js && jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git+https://github.com/ninosaurus/eslint-check.git"
   },
   "keywords": [
     "GitHub",
+    "ESLint",
+    "Code quality",
     "Actions",
     "JavaScript"
   ],
-  "author": "GitHub",
+  "author": "Valentin Hisari <hisari.valentin@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/actions/javascript-action/issues"
   },
   "homepage": "https://github.com/actions/javascript-action#readme",
   "dependencies": {
-    "@actions/core": "^1.1.1"
+    "@actions/core": "^1.1.1",
+    "eslint": "^6.7.1"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
     "babel-eslint": "^10.0.3",
-    "eslint": "^6.3.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
