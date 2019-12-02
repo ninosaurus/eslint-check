@@ -67,13 +67,13 @@ async function createCheck() {
   return id;
 }
 
-async function eslint(files) {
+function eslint(files) {
   // eslint-disable-next-line global-require,import/no-dynamic-require
   const { CLIEngine } = require('eslint');
 
   const cli = new CLIEngine({
     // useEslintrc: false,
-    // configFile: resolve(GITHUB_WORKSPACE, eslintConfigPath),
+    configFile: resolve(GITHUB_WORKSPACE, eslintConfigPath),
     extensions: ['.js', '.jsx', '.tsx'],
     cwd: GITHUB_WORKSPACE
   });
