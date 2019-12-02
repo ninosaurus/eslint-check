@@ -4,22 +4,22 @@ import { CLIEngine } from 'eslint';
 const { readdirSync } = require('fs');
 const request = require('./request');
 
-
 const {
-  GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE
+  GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE, CUSTOM_DIRECTORY
 } = process.env;
 
 const getDirectories = source => readdirSync(source, { withFileTypes: true })
   .filter(dirent => dirent.isDirectory())
   .map(dirent => dirent.name);
 
-console.log(process.cwd(), getDirectories(process.cwd())
-  .join(', '));
-process.chdir('./application');
-console.log(process.cwd(), getDirectories(process.cwd())
-  .join(', '));
-console.log(join(process.cwd(), 'node_modules'), getDirectories(join(process.cwd(), 'node_modules'))
-  .join(', '));
+console.log(CUSTOM_DIRECTORY);
+
+if (CUSTOM_DIRECTORY) {
+  const directory = join(process.cwd(), CUSTOM_DIRECTORY);
+  console.log(`New directory: ${directory}`);
+  process.chdir(directory);
+  console.log(getDirectories(process.cwd()));
+}
 
 const repo = 'fishingbooker';
 const owner = 'FishingBookerCom';
