@@ -137,33 +137,42 @@ async function run() {
       core.getInput('repo-token', { required: true })
     );
     const { context } = github;
-    const prInfo = await octokit.graphql(
-      `
-      query($owner: String!, $name: String!, $prNumber: Int!) {
-        repository(owner: $owner, name: $name) {
-          pullRequest(number: $prNumber) {
-            files(first: 100) {
-              nodes {
-                path
-              }
-            }
-            commits(last: 1) {
-              nodes {
-                commit {
-                  oid
-                }
-              }
-            }
-          }
-        }
-      }
-    `,
-      {
-        owner: context.repo.owner,
-        name: context.repo.repo,
-        prNumber: context.issue.number
-      }
-    );
+    console.log(context);
+    process.exit(78);
+    return;
+    // const { repo } = context;
+    // const { owner } = repo;
+    // var compare = await client.Repository.Commit.Compare(owner, repo, "master", "branch")
+    const compareCommits = await octokit.repos.compareCommits({
+
+    });
+    /*
+     `
+     query($owner: String!, $name: String!, $prNumber: Int!) {
+     repository(owner: $owner, name: $name) {
+     pullRequest(number: $prNumber) {
+     files(first: 100) {
+     nodes {
+     path
+     }
+     }
+     commits(last: 1) {
+     nodes {
+     commit {
+     oid
+     }
+     }
+     }
+     }
+     }
+     }
+     `,
+     {
+     owner: context.repo.owner,
+     name: context.repo.repo,
+     prNumber: context.issue.number
+     }
+     */
     const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
     tools.log.info('Commit from GraphQL:', currentSha);
     const files = prInfo.repository.pullRequest.files.nodes;
