@@ -93,8 +93,7 @@ module.exports = {
         docs: {
             description: "disallow empty functions",
             category: "Best Practices",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/no-empty-function"
+            recommended: false
         },
 
         schema: [
@@ -109,11 +108,7 @@ module.exports = {
                 },
                 additionalProperties: false
             }
-        ],
-
-        messages: {
-            unexpected: "Unexpected empty {{name}}."
-        }
+        ]
     },
 
     create(context) {
@@ -150,7 +145,7 @@ module.exports = {
                 context.report({
                     node,
                     loc: node.body.loc.start,
-                    messageId: "unexpected",
+                    message: "Unexpected empty {{name}}.",
                     data: { name }
                 });
             }

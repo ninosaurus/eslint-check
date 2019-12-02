@@ -79,8 +79,7 @@ module.exports = {
         docs: {
             description: "disallow the use of `eval()`",
             category: "Best Practices",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/no-eval"
+            recommended: false
         },
 
         schema: [
@@ -91,11 +90,7 @@ module.exports = {
                 },
                 additionalProperties: false
             }
-        ],
-
-        messages: {
-            unexpected: "eval can be harmful."
-        }
+        ]
     },
 
     create(context) {
@@ -151,19 +146,20 @@ module.exports = {
          * @returns {void}
          */
         function report(node) {
+            let locationNode = node;
             const parent = node.parent;
-            const locationNode = node.type === "MemberExpression"
-                ? node.property
-                : node;
 
-            const reportNode = parent.type === "CallExpression" && parent.callee === node
-                ? parent
-                : node;
+            if (node.type === "MemberExpression") {
+                locationNode = node.property;
+            }
+            if (parent.type === "CallExpression" && parent.callee === node) {
+                node = parent;
+            }
 
             context.report({
-                node: reportNode,
+                node,
                 loc: locationNode.loc.start,
-                messageId: "unexpected"
+                message: "eval can be harmful."
             });
         }
 

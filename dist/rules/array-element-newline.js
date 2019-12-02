@@ -16,8 +16,7 @@ module.exports = {
         docs: {
             description: "enforce line breaks after each array element",
             category: "Stylistic Issues",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/array-element-newline"
+            recommended: false
         },
         fixable: "whitespace",
         schema: [
@@ -41,12 +40,7 @@ module.exports = {
                     }
                 ]
             }
-        ],
-
-        messages: {
-            unexpectedLineBreak: "There should be no linebreak here.",
-            missingLineBreak: "There should be a linebreak after this element."
-        }
+        ]
     },
 
     create(context) {
@@ -59,16 +53,16 @@ module.exports = {
         /**
          * Normalizes a given option value.
          *
-         * @param {string|Object|undefined} providedOption - An option value to parse.
+         * @param {string|Object|undefined} option - An option value to parse.
          * @returns {{multiline: boolean, minItems: number}} Normalized option object.
          */
-        function normalizeOptionValue(providedOption) {
+        function normalizeOptionValue(option) {
             let multiline = false;
             let minItems;
 
-            const option = providedOption || "always";
+            option = option || "always";
 
-            if (!option || option === "always" || option.minItems === 0) {
+            if (option === "always" || option.minItems === 0) {
                 minItems = 0;
             } else if (option === "never") {
                 minItems = Number.POSITIVE_INFINITY;
@@ -93,10 +87,10 @@ module.exports = {
         }
 
         /**
-         * Reports that there shouldn't be a line break after the first token
-         * @param {Token} token - The token to use for the report.
-         * @returns {void}
-         */
+        * Reports that there shouldn't be a line break after the first token
+        * @param {Token} token - The token to use for the report.
+        * @returns {void}
+        */
         function reportNoLineBreak(token) {
             const tokenBefore = sourceCode.getTokenBefore(token, { includeComments: true });
 
@@ -105,7 +99,7 @@ module.exports = {
                     start: tokenBefore.loc.end,
                     end: token.loc.start
                 },
-                messageId: "unexpectedLineBreak",
+                message: "There should be no linebreak here.",
                 fix(fixer) {
                     if (astUtils.isCommentToken(tokenBefore)) {
                         return null;
@@ -142,10 +136,10 @@ module.exports = {
         }
 
         /**
-         * Reports that there should be a line break after the first token
-         * @param {Token} token - The token to use for the report.
-         * @returns {void}
-         */
+        * Reports that there should be a line break after the first token
+        * @param {Token} token - The token to use for the report.
+        * @returns {void}
+        */
         function reportRequiredLineBreak(token) {
             const tokenBefore = sourceCode.getTokenBefore(token, { includeComments: true });
 
@@ -154,7 +148,7 @@ module.exports = {
                     start: tokenBefore.loc.end,
                     end: token.loc.start
                 },
-                messageId: "missingLineBreak",
+                message: "There should be a linebreak after this element.",
                 fix(fixer) {
                     return fixer.replaceTextRange([tokenBefore.range[1], token.range[0]], "\n");
                 }

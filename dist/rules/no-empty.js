@@ -19,8 +19,7 @@ module.exports = {
         docs: {
             description: "disallow empty block statements",
             category: "Possible Errors",
-            recommended: true,
-            url: "https://eslint.org/docs/rules/no-empty"
+            recommended: true
         },
 
         schema: [
@@ -33,11 +32,7 @@ module.exports = {
                 },
                 additionalProperties: false
             }
-        ],
-
-        messages: {
-            unexpected: "Empty {{type}} statement."
-        }
+        ]
     },
 
     create(context) {
@@ -68,13 +63,13 @@ module.exports = {
                     return;
                 }
 
-                context.report({ node, messageId: "unexpected", data: { type: "block" } });
+                context.report({ node, message: "Empty block statement." });
             },
 
             SwitchStatement(node) {
 
                 if (typeof node.cases === "undefined" || node.cases.length === 0) {
-                    context.report({ node, messageId: "unexpected", data: { type: "switch" } });
+                    context.report({ node, message: "Empty switch statement." });
                 }
             }
         };

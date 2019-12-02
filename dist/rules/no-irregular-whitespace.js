@@ -30,8 +30,7 @@ module.exports = {
         docs: {
             description: "disallow irregular whitespace outside of strings and comments",
             category: "Possible Errors",
-            recommended: true,
-            url: "https://eslint.org/docs/rules/no-irregular-whitespace"
+            recommended: true
         },
 
         schema: [
@@ -101,7 +100,7 @@ module.exports = {
          */
         function removeInvalidNodeErrorsInIdentifierOrLiteral(node) {
             const shouldCheckStrings = skipStrings && (typeof node.value === "string");
-            const shouldCheckRegExps = skipRegExps && Boolean(node.regex);
+            const shouldCheckRegExps = skipRegExps && (node.value instanceof RegExp);
 
             if (shouldCheckStrings || shouldCheckRegExps) {
 

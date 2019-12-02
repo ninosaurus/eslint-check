@@ -131,8 +131,7 @@ module.exports = {
         docs: {
             description: "enforce consistent spacing between keys and values in object literal properties",
             category: "Stylistic Issues",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/key-spacing"
+            recommended: false
         },
 
         fixable: "whitespace",
@@ -330,11 +329,9 @@ module.exports = {
                 return true;
             }
 
-            /*
-             * Check that the first comment is adjacent to the end of the group, the
-             * last comment is adjacent to the candidate property, and that successive
-             * comments are adjacent to each other.
-             */
+            // Check that the first comment is adjacent to the end of the group, the
+            // last comment is adjacent to the candidate property, and that successive
+            // comments are adjacent to each other.
             const leadingComments = sourceCode.getCommentsBefore(candidate);
 
             if (
@@ -360,10 +357,9 @@ module.exports = {
          */
         function isKeyValueProperty(property) {
             return !(
-                property.method ||
+                (property.method ||
                 property.shorthand ||
-                property.kind !== "init" ||
-                property.type !== "Property" // Could be "ExperimentalSpreadProperty" or "SpreadElement"
+                property.kind !== "init" || property.type !== "Property") // Could be "ExperimentalSpreadProperty" or "SpreadProperty"
             );
         }
 
@@ -424,6 +420,7 @@ module.exports = {
                 isExtra = diff > 0,
                 diffAbs = Math.abs(diff),
                 spaces = Array(diffAbs + 1).join(" ");
+            let fix;
 
             if ((
                 diff && mode === "strict" ||
@@ -431,16 +428,14 @@ module.exports = {
                 diff > 0 && !expected && mode === "minimum") &&
                 !(expected && containsLineTerminator(whitespace))
             ) {
-                let fix;
-
                 if (isExtra) {
                     let range;
 
                     // Remove whitespace
                     if (isKeySide) {
-                        range = [tokenBeforeColon.range[1], tokenBeforeColon.range[1] + diffAbs];
+                        range = [tokenBeforeColon.end, tokenBeforeColon.end + diffAbs];
                     } else {
-                        range = [tokenAfterColon.range[0] - diffAbs, tokenAfterColon.range[0]];
+                        range = [tokenAfterColon.start - diffAbs, tokenAfterColon.start];
                     }
                     fix = function(fixer) {
                         return fixer.removeRange(range);

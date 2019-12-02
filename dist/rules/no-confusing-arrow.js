@@ -30,8 +30,7 @@ module.exports = {
         docs: {
             description: "disallow arrow functions where they could be confused with comparisons",
             category: "ECMAScript 6",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/no-confusing-arrow"
+            recommended: false
         },
 
         fixable: "code",
@@ -42,11 +41,7 @@ module.exports = {
                 allowParens: { type: "boolean" }
             },
             additionalProperties: false
-        }],
-
-        messages: {
-            confusing: "Arrow function used ambiguously with a conditional expression."
-        }
+        }]
     },
 
     create(context) {
@@ -64,7 +59,7 @@ module.exports = {
             if (isConditional(body) && !(config.allowParens && astUtils.isParenthesised(sourceCode, body))) {
                 context.report({
                     node,
-                    messageId: "confusing",
+                    message: "Arrow function used ambiguously with a conditional expression.",
                     fix(fixer) {
 
                         // if `allowParens` is not set to true dont bother wrapping in parens

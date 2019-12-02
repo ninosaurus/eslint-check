@@ -25,8 +25,7 @@ module.exports = {
             description: "enforce consistent indentation",
             category: "Stylistic Issues",
             recommended: false,
-            replacedBy: ["indent"],
-            url: "https://eslint.org/docs/rules/indent-legacy"
+            replacedBy: ["indent"]
         },
 
         deprecated: true,
@@ -275,10 +274,8 @@ module.exports = {
                 foundStatement = `${actualSpaces} ${foundSpacesWord} and ${actualTabs} ${foundTabsWord}`; // e.g. "1 space and 2 tabs"
             } else if (actualSpaces > 0) {
 
-                /*
-                 * Abbreviate the message if the expected indentation is also spaces.
-                 * e.g. 'Expected 4 spaces but found 2' rather than 'Expected 4 spaces but found 2 spaces'
-                 */
+                // Abbreviate the message if the expected indentation is also spaces.
+                // e.g. 'Expected 4 spaces but found 2' rather than 'Expected 4 spaces but found 2 spaces'
                 foundStatement = indentType === "space" ? actualSpaces : `${actualSpaces} ${foundSpacesWord}`;
             } else if (actualTabs > 0) {
                 foundStatement = indentType === "tab" ? actualTabs : `${actualTabs} ${foundTabsWord}`;
@@ -326,8 +323,8 @@ module.exports = {
          * @param {ASTNode|Token} node Node to examine
          * @param {boolean} [byLastLine=false] get indent of node's last line
          * @returns {Object} The node's indent. Contains keys `space` and `tab`, representing the indent of each character. Also
-         * contains keys `goodChar` and `badChar`, where `goodChar` is the amount of the user's desired indentation character, and
-         * `badChar` is the amount of the other indentation character.
+         contains keys `goodChar` and `badChar`, where `goodChar` is the amount of the user's desired indentation character, and
+         `badChar` is the amount of the other indentation character.
          */
         function getNodeIndent(node, byLastLine) {
             const token = byLastLine ? sourceCode.getLastToken(node) : sourceCode.getFirstToken(node);
@@ -448,10 +445,8 @@ module.exports = {
          */
         function checkLastReturnStatementLineIndent(node, firstLineIndent) {
 
-            /*
-             * in case if return statement ends with ');' we have traverse back to ')'
-             * otherwise we'll measure indent for ';' and replace ')'
-             */
+            // in case if return statement ends with ');' we have traverse back to ')'
+            // otherwise we'll measure indent for ';' and replace ')'
             const lastToken = sourceCode.getLastToken(node, astUtils.isClosingParenToken);
             const textBeforeClosingParenthesis = sourceCode.getText(lastToken, lastToken.loc.start.column).slice(0, -1);
 
@@ -505,9 +500,12 @@ module.exports = {
          */
         function getParentNodeByType(node, type, stopAtList) {
             let parent = node.parent;
-            const stopAtSet = new Set(stopAtList || ["Program"]);
 
-            while (parent.type !== type && !stopAtSet.has(parent.type) && parent.type !== "Program") {
+            if (!stopAtList) {
+                stopAtList = ["Program"];
+            }
+
+            while (parent.type !== type && stopAtList.indexOf(parent.type) === -1 && parent.type !== "Program") {
                 parent = parent.parent;
             }
 
@@ -647,10 +645,8 @@ module.exports = {
                 }
             }
 
-            /*
-             * function body indent should be indent + indent size, unless this
-             * is a FunctionDeclaration, FunctionExpression, or outer IIFE and the corresponding options are enabled.
-             */
+            // function body indent should be indent + indent size, unless this
+            // is a FunctionDeclaration, FunctionExpression, or outer IIFE and the corresponding options are enabled.
             let functionOffset = indentSize;
 
             if (options.outerIIFEBody !== null && isOuterIIFE(calleeNode)) {
@@ -733,13 +729,11 @@ module.exports = {
                 if (!parentVarNode || parentVarNode.loc.start.line !== node.loc.start.line) {
                     if (parent.type !== "VariableDeclarator" || parentVarNode === parentVarNode.parent.declarations[0]) {
                         if (parent.type === "VariableDeclarator" && parentVarNode.loc.start.line === parent.loc.start.line) {
-                            nodeIndent += (indentSize * options.VariableDeclarator[parentVarNode.parent.kind]);
+                            nodeIndent = nodeIndent + (indentSize * options.VariableDeclarator[parentVarNode.parent.kind]);
                         } else if (parent.type === "ObjectExpression" || parent.type === "ArrayExpression") {
                             const parentElements = node.parent.type === "ObjectExpression" ? node.parent.properties : node.parent.elements;
 
-                            if (parentElements[0] &&
-                                    parentElements[0].loc.start.line === parent.loc.start.line &&
-                                    parentElements[0].loc.end.line !== parent.loc.start.line) {
+                            if (parentElements[0] && parentElements[0].loc.start.line === parent.loc.start.line && parentElements[0].loc.end.line !== parent.loc.start.line) {
 
                                 /*
                                  * If the first element of the array spans multiple lines, don't increase the expected indentation of the rest.
@@ -771,7 +765,7 @@ module.exports = {
                         }
                     }
                 } else if (!parentVarNode && !isFirstArrayElementOnSameLine(parent) && parent.type !== "MemberExpression" && parent.type !== "ExpressionStatement" && parent.type !== "AssignmentExpression" && parent.type !== "Property") {
-                    nodeIndent += indentSize;
+                    nodeIndent = nodeIndent + indentSize;
                 }
 
                 checkFirstNodeLineIndent(node, nodeIndent);
@@ -803,8 +797,7 @@ module.exports = {
                 }
             }
 
-            checkLastNodeLineIndent(node, nodeIndent +
-                (isNodeInVarOnTop(node, parentVarNode) ? options.VariableDeclarator[parentVarNode.parent.kind] * indentSize : 0));
+            checkLastNodeLineIndent(node, nodeIndent + (isNodeInVarOnTop(node, parentVarNode) ? options.VariableDeclarator[parentVarNode.parent.kind] * indentSize : 0));
         }
 
         /**
@@ -938,18 +931,18 @@ module.exports = {
         /**
          * Returns the expected indentation for the case statement
          * @param {ASTNode} node node to examine
-         * @param {int} [providedSwitchIndent] indent for switch statement
+         * @param {int} [switchIndent] indent for switch statement
          * @returns {int} indent size
          */
-        function expectedCaseIndent(node, providedSwitchIndent) {
+        function expectedCaseIndent(node, switchIndent) {
             const switchNode = (node.type === "SwitchStatement") ? node : node.parent;
-            const switchIndent = typeof providedSwitchIndent === "undefined"
-                ? getNodeIndent(switchNode).goodChar
-                : providedSwitchIndent;
             let caseIndent;
 
             if (caseIndentStore[switchNode.loc.start.line]) {
                 return caseIndentStore[switchNode.loc.start.line];
+            }
+            if (typeof switchIndent === "undefined") {
+                switchIndent = getNodeIndent(switchNode).goodChar;
             }
 
             if (switchNode.cases.length > 0 && options.SwitchCase === 0) {
@@ -972,8 +965,7 @@ module.exports = {
             const regex = /^return\s*?\(\s*?\);*?/;
 
             const statementWithoutArgument = sourceCode.getText(node).replace(
-                sourceCode.getText(node.argument), ""
-            );
+                sourceCode.getText(node.argument), "");
 
             return regex.test(statementWithoutArgument);
         }
@@ -1031,12 +1023,10 @@ module.exports = {
                     return;
                 }
 
-                /*
-                 * The typical layout of variable declarations and assignments
-                 * alter the expectation of correct indentation. Skip them.
-                 * TODO: Add appropriate configuration options for variable
-                 * declarations and assignments.
-                 */
+                // The typical layout of variable declarations and assignments
+                // alter the expectation of correct indentation. Skip them.
+                // TODO: Add appropriate configuration options for variable
+                // declarations and assignments.
                 if (getParentNodeByType(node, "VariableDeclarator", ["FunctionExpression", "ArrowFunctionExpression"])) {
                     return;
                 }
@@ -1049,7 +1039,7 @@ module.exports = {
 
                 const checkNodes = [node.property];
 
-                const dot = sourceCode.getTokenBefore(node.property);
+                const dot = context.getTokenBefore(node.property);
 
                 if (dot.type === "Punctuator" && dot.value === ".") {
                     checkNodes.push(dot);

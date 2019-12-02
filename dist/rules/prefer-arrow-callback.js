@@ -64,10 +64,9 @@ function getVariableOfArguments(scope) {
  */
 function getCallbackInfo(node) {
     const retv = { isCallback: false, isLexicalThis: false };
-    let currentNode = node;
     let parent = node.parent;
 
-    while (currentNode) {
+    while (node) {
         switch (parent.type) {
 
             // Checks parents recursively.
@@ -78,7 +77,7 @@ function getCallbackInfo(node) {
 
             // Checks whether the parent node is `.bind(this)` call.
             case "MemberExpression":
-                if (parent.object === currentNode &&
+                if (parent.object === node &&
                     !parent.property.computed &&
                     parent.property.type === "Identifier" &&
                     parent.property.name === "bind" &&
@@ -89,6 +88,7 @@ function getCallbackInfo(node) {
                         parent.parent.arguments.length === 1 &&
                         parent.parent.arguments[0].type === "ThisExpression"
                     );
+                    node = parent;
                     parent = parent.parent;
                 } else {
                     return retv;
@@ -98,7 +98,7 @@ function getCallbackInfo(node) {
             // Checks whether the node is a callback.
             case "CallExpression":
             case "NewExpression":
-                if (parent.callee !== currentNode) {
+                if (parent.callee !== node) {
                     retv.isCallback = true;
                 }
                 return retv;
@@ -107,7 +107,7 @@ function getCallbackInfo(node) {
                 return retv;
         }
 
-        currentNode = parent;
+        node = parent;
         parent = parent.parent;
     }
 
@@ -116,12 +116,12 @@ function getCallbackInfo(node) {
 }
 
 /**
- * Checks whether a simple list of parameters contains any duplicates. This does not handle complex
- * parameter lists (e.g. with destructuring), since complex parameter lists are a SyntaxError with duplicate
- * parameter names anyway. Instead, it always returns `false` for complex parameter lists.
- * @param {ASTNode[]} paramsList The list of parameters for a function
- * @returns {boolean} `true` if the list of parameters contains any duplicates
- */
+* Checks whether a simple list of parameters contains any duplicates. This does not handle complex
+parameter lists (e.g. with destructuring), since complex parameter lists are a SyntaxError with duplicate
+parameter names anyway. Instead, it always returns `false` for complex parameter lists.
+* @param {ASTNode[]} paramsList The list of parameters for a function
+* @returns {boolean} `true` if the list of parameters contains any duplicates
+*/
 function hasDuplicateParams(paramsList) {
     return paramsList.every(param => param.type === "Identifier") && paramsList.length !== new Set(paramsList.map(param => param.name)).size;
 }
@@ -133,10 +133,9 @@ function hasDuplicateParams(paramsList) {
 module.exports = {
     meta: {
         docs: {
-            description: "require using arrow functions for callbacks",
+            description: "require arrow functions as callbacks",
             category: "ECMAScript 6",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/prefer-arrow-callback"
+            recommended: false
         },
 
         schema: [
@@ -267,12 +266,10 @@ module.exports = {
                         fix(fixer) {
                             if ((!callbackInfo.isLexicalThis && scopeInfo.this) || hasDuplicateParams(node.params)) {
 
-                                /*
-                                 * If the callback function does not have .bind(this) and contains a reference to `this`, there
-                                 * is no way to determine what `this` should be, so don't perform any fixes.
-                                 * If the callback function has duplicates in its list of parameters (possible in sloppy mode),
-                                 * don't replace it with an arrow function, because this is a SyntaxError with arrow functions.
-                                 */
+                                // If the callback function does not have .bind(this) and contains a reference to `this`, there
+                                // is no way to determine what `this` should be, so don't perform any fixes.
+                                // If the callback function has duplicates in its list of parameters (possible in sloppy mode),
+                                // don't replace it with an arrow function, because this is a SyntaxError with arrow functions.
                                 return null;
                             }
 

@@ -27,8 +27,7 @@ module.exports = {
         docs: {
             description: "disallow ternary operators when simpler alternatives exist",
             category: "Stylistic Issues",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/no-unneeded-ternary"
+            recommended: false
         },
 
         schema: [
@@ -73,10 +72,8 @@ module.exports = {
                     node.right,
                     token => token.value === node.operator
                 );
-                const text = sourceCode.getText();
 
-                return text.slice(node.range[0],
-                    operatorToken.range[0]) + OPERATOR_INVERSES[node.operator] + text.slice(operatorToken.range[1], node.range[1]);
+                return sourceCode.getText().slice(node.range[0], operatorToken.range[0]) + OPERATOR_INVERSES[node.operator] + sourceCode.getText().slice(operatorToken.range[1], node.range[1]);
             }
 
             if (astUtils.getPrecedence(node) < astUtils.getPrecedence({ type: "UnaryExpression" })) {

@@ -29,8 +29,7 @@ module.exports = {
         docs: {
             description: "require or disallow named `function` expressions",
             category: "Stylistic Issues",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/func-names"
+            recommended: false
         },
 
         schema: [

@@ -6,10 +6,13 @@
 
 "use strict";
 
-/* eslint sort-keys: ["error", "asc"] */
+/* eslint sort-keys: ["error", "asc"], quote-props: ["error", "consistent"] */
+/* eslint-disable sort-keys */
 
 module.exports = {
     rules: {
+
+        /* eslint-enable sort-keys */
         "accessor-pairs": "off",
         "array-bracket-newline": "off",
         "array-bracket-spacing": "off",
@@ -22,39 +25,36 @@ module.exports = {
         "block-spacing": "off",
         "brace-style": "off",
         "callback-return": "off",
-        camelcase: "off",
+        "camelcase": "off",
         "capitalized-comments": "off",
         "class-methods-use-this": "off",
         "comma-dangle": "off",
         "comma-spacing": "off",
         "comma-style": "off",
-        complexity: "off",
+        "complexity": "off",
         "computed-property-spacing": "off",
         "consistent-return": "off",
         "consistent-this": "off",
         "constructor-super": "error",
-        curly: "off",
+        "curly": "off",
         "default-case": "off",
         "dot-location": "off",
         "dot-notation": "off",
         "eol-last": "off",
-        eqeqeq: "off",
+        "eqeqeq": "off",
         "for-direction": "off",
         "func-call-spacing": "off",
         "func-name-matching": "off",
         "func-names": "off",
         "func-style": "off",
-        "function-paren-newline": "off",
         "generator-star-spacing": "off",
-        "getter-return": "off",
         "global-require": "off",
         "guard-for-in": "off",
         "handle-callback-err": "off",
         "id-blacklist": "off",
         "id-length": "off",
         "id-match": "off",
-        "implicit-arrow-linebreak": "off",
-        indent: "off",
+        "indent": "off",
         "indent-legacy": "off",
         "init-declarations": "off",
         "jsx-quotes": "off",
@@ -64,7 +64,6 @@ module.exports = {
         "linebreak-style": "off",
         "lines-around-comment": "off",
         "lines-around-directive": "off",
-        "lines-between-class-members": "off",
         "max-depth": "off",
         "max-len": "off",
         "max-lines": "off",
@@ -72,7 +71,6 @@ module.exports = {
         "max-params": "off",
         "max-statements": "off",
         "max-statements-per-line": "off",
-        "multiline-comment-style": "off",
         "multiline-ternary": "off",
         "new-cap": "off",
         "new-parens": "off",
@@ -235,13 +233,13 @@ module.exports = {
         "prefer-spread": "off",
         "prefer-template": "off",
         "quote-props": "off",
-        quotes: "off",
-        radix: "off",
+        "quotes": "off",
+        "radix": "off",
         "require-await": "off",
         "require-jsdoc": "off",
         "require-yield": "error",
         "rest-spread-spacing": "off",
-        semi: "off",
+        "semi": "off",
         "semi-spacing": "off",
         "semi-style": "off",
         "sort-imports": "off",
@@ -253,7 +251,7 @@ module.exports = {
         "space-infix-ops": "off",
         "space-unary-ops": "off",
         "spaced-comment": "off",
-        strict: "off",
+        "strict": "off",
         "switch-colon-spacing": "off",
         "symbol-description": "off",
         "template-curly-spacing": "off",
@@ -266,6 +264,6 @@ module.exports = {
         "wrap-iife": "off",
         "wrap-regex": "off",
         "yield-star-spacing": "off",
-        yoda: "off"
+        "yoda": "off"
     }
 };

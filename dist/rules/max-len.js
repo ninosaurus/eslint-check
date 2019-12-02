@@ -68,8 +68,7 @@ module.exports = {
         docs: {
             description: "enforce a maximum line length",
             category: "Stylistic Issues",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/max-len"
+            recommended: false
         },
 
         schema: [
@@ -182,10 +181,11 @@ module.exports = {
          * Gets the line after the comment and any remaining trailing whitespace is
          * stripped.
          * @param {string} line The source line with a trailing comment
+         * @param {number} lineNumber The one-indexed line number this is on
          * @param {ASTNode} comment The comment to remove
          * @returns {string} Line without comment and trailing whitepace
          */
-        function stripTrailingComment(line, comment) {
+        function stripTrailingComment(line, lineNumber, comment) {
 
             // loc.column is zero-indexed
             return line.slice(0, comment.loc.start.column).replace(/\s+$/, "");
@@ -213,8 +213,7 @@ module.exports = {
          * @returns {ASTNode[]} An array of string nodes.
          */
         function getAllStrings() {
-            return sourceCode.ast.tokens.filter(token => (token.type === "String" ||
-                (token.type === "JSXText" && sourceCode.getNodeByRangeIndex(token.range[0] - 1).type === "JSXAttribute")));
+            return sourceCode.ast.tokens.filter(token => token.type === "String");
         }
 
         /**
@@ -288,7 +287,6 @@ module.exports = {
                  * line is a comment
                  */
                 let lineIsComment = false;
-                let textToMeasure;
 
                 /*
                  * We can short-circuit the comment checks if we're already out of
@@ -307,17 +305,12 @@ module.exports = {
 
                     if (isFullLineComment(line, lineNumber, comment)) {
                         lineIsComment = true;
-                        textToMeasure = line;
                     } else if (ignoreTrailingComments && isTrailingComment(line, lineNumber, comment)) {
-                        textToMeasure = stripTrailingComment(line, comment);
-                    } else {
-                        textToMeasure = line;
+                        line = stripTrailingComment(line, lineNumber, comment);
                     }
-                } else {
-                    textToMeasure = line;
                 }
-                if (ignorePattern && ignorePattern.test(textToMeasure) ||
-                    ignoreUrls && URL_REGEXP.test(textToMeasure) ||
+                if (ignorePattern && ignorePattern.test(line) ||
+                    ignoreUrls && URL_REGEXP.test(line) ||
                     ignoreStrings && stringsByLine[lineNumber] ||
                     ignoreTemplateLiterals && templateLiteralsByLine[lineNumber] ||
                     ignoreRegExpLiterals && regExpLiteralsByLine[lineNumber]
@@ -327,7 +320,7 @@ module.exports = {
                     return;
                 }
 
-                const lineLength = computeLineLength(textToMeasure, tabWidth);
+                const lineLength = computeLineLength(line, tabWidth);
                 const commentLengthApplies = lineIsComment && maxCommentLength;
 
                 if (lineIsComment && ignoreComments) {

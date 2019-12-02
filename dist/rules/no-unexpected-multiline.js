@@ -19,8 +19,7 @@ module.exports = {
         docs: {
             description: "disallow confusing multiline expressions",
             category: "Possible Errors",
-            recommended: true,
-            url: "https://eslint.org/docs/rules/no-unexpected-multiline"
+            recommended: true
         },
 
         schema: []
@@ -33,7 +32,7 @@ module.exports = {
         const TAGGED_TEMPLATE_MESSAGE = "Unexpected newline between template tag and template literal.";
         const DIVISION_MESSAGE = "Unexpected newline between numerator and division operator.";
 
-        const REGEX_FLAG_MATCHER = /^[gimsuy]+$/;
+        const REGEX_FLAG_MATCHER = /^[gimuy]+$/;
 
         const sourceCode = context.getSourceCode();
 

@@ -14,15 +14,10 @@ module.exports = {
         docs: {
             description: "disallow duplicate arguments in `function` definitions",
             category: "Possible Errors",
-            recommended: true,
-            url: "https://eslint.org/docs/rules/no-dupe-args"
+            recommended: true
         },
 
-        schema: [],
-
-        messages: {
-            unexpected: "Duplicate param '{{name}}'."
-        }
+        schema: []
     },
 
     create(context) {
@@ -58,7 +53,7 @@ module.exports = {
                 if (defs.length >= 2) {
                     context.report({
                         node,
-                        messageId: "unexpected",
+                        message: "Duplicate param '{{name}}'.",
                         data: { name: variable.name }
                     });
                 }

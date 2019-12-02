@@ -81,8 +81,7 @@ module.exports = {
         docs: {
             description: "enforce the consistent use of the radix argument when using `parseInt()`",
             category: "Best Practices",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/radix"
+            recommended: false
         },
 
         schema: [

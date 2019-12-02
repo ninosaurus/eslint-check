@@ -20,8 +20,7 @@ module.exports = {
         docs: {
             description: "enforce spacing around colons of switch statements",
             category: "Stylistic Issues",
-            recommended: false,
-            url: "https://eslint.org/docs/rules/switch-colon-spacing"
+            recommended: false
         },
         schema: [
             {
