@@ -15,8 +15,7 @@ const gql = (s) => s.join('');
 
 const {
   GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE,
-  GITHUB_REPOSITORY,
-  CUSTOM_DIRECTORY
+  GITHUB_REPOSITORY
 } = process.env;
 
 const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
@@ -36,7 +35,7 @@ const isFileOk = (path) => {
 };
 
 if (customDirectory) {
-  const directory = join(process.cwd(), CUSTOM_DIRECTORY);
+  const directory = join(process.cwd(), customDirectory);
   tools.log.info(`New directory: ${directory}`);
   process.chdir(directory);
   tools.log.info(getDirectories(process.cwd()));
