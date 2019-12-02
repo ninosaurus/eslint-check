@@ -53,7 +53,7 @@ async function createCheck() {
 function eslint() {
   // eslint-disable-next-line global-require,import/no-dynamic-require
 
-  const cli = CLIEngine({
+  const cli = new CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
     ignorePath: '.gitignore'
   });
