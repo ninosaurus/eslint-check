@@ -24,12 +24,13 @@ const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
 const isFileOk = (path) => {
   try {
     if (existsSync(path)) {
-      return true;
+      console.log(`Path: ${path} is valid`);
+      return;
     }
   } catch (err) {
     console.error(err);
   }
-  return false;
+  console.log(`Path: ${path} is NOT valid`);
 };
 
 if (CUSTOM_DIRECTORY) {
@@ -200,9 +201,8 @@ async function run() {
       return;
     }
 
-    if (!filesToLint.every(isFileOk)) {
-      console.log('Something not fine', process.cwd());
-    }
+    filesToLint.forEach(isFileOk);
+
     tools.log.info('Started linting...');
     const { conclusion, output } = eslint(filesToLint);
     tools.log.info('Ended linting.');
