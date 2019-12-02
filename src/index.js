@@ -69,10 +69,10 @@ async function createCheck() {
 function eslint(files) {
   const cli = new CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
-    cwd: process.cwd(),
+    cwd: GITHUB_WORKSPACE,
     ignorePath: '.gitignore'
   });
-  console.log(process.cwd());
+  console.log(process.cwd(), GITHUB_WORKSPACE);
   const report = cli.executeOnFiles(files);
   console.log('PASSED', report);
   // fixableErrorCount, fixableWarningCount are available too
