@@ -6,6 +6,7 @@ import { Toolkit } from 'actions-toolkit';
 import { readdirSync, existsSync } from 'fs';
 
 const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
+const customDirectory = core.getInput('custom-directory', { required: true });
 
 const tools = new Toolkit();
 const request = require('./request');
@@ -34,7 +35,7 @@ const isFileOk = (path) => {
   console.log(`Path: ${path} is NOT valid`);
 };
 
-if (CUSTOM_DIRECTORY) {
+if (customDirectory) {
   const directory = join(process.cwd(), CUSTOM_DIRECTORY);
   tools.log.info(`New directory: ${directory}`);
   process.chdir(directory);
@@ -72,7 +73,7 @@ function eslint(files) {
     useEslintrc: false,
     configPath: resolve(GITHUB_WORKSPACE, eslintConfigPath),
     extensions: ['.js', '.jsx', '.tsx'],
-    cwd: GITHUB_WORKSPACE
+    cwd: resolve(GITHUB_WORKSPACE, eslintConfigPath)
   });
   console.log(process.cwd(), GITHUB_WORKSPACE);
   const report = cli.executeOnFiles(files);
