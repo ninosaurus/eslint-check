@@ -23,8 +23,7 @@ const request = require('./request');
 const gql = (s) => s.join('');
 
 const {
-  GITHUB_SHA, GITHUB_WORKSPACE,
-  GITHUB_REPOSITORY
+  GITHUB_WORKSPACE
 } = process.env;
 
 const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
@@ -103,8 +102,7 @@ function exitWithError(err) {
 }
 
 async function run() {
-  // tools.log.info(process.env);
-  // tools.log.info(process.cwd());
+  tools.log.info(process.env);
   const id = await createCheck();
   tools.log.info(`Created check. Id: ${id}`);
   try {
