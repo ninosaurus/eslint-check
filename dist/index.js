@@ -21179,7 +21179,8 @@ async function eslint(files) {
   const cli = new CLIEngine({
     // useEslintrc: false,
     // configFile: resolve(GITHUB_WORKSPACE, eslintConfigPath),
-    extensions: ['.js', '.jsx', '.tsx']
+    extensions: ['.js', '.jsx', '.tsx'],
+    cwd: GITHUB_WORKSPACE
   });
   // console.log(process.cwd(), GITHUB_WORKSPACE);
   console.log(files);
