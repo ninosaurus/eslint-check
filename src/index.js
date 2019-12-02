@@ -57,7 +57,7 @@ function eslint() {
   });
   const directory = resolve(GITHUB_WORKSPACE, './');
   tools.log.info('START cli.executeOnFiles...', directory, getDirectories(directory));
-  const report = cli.executeOnFiles([directory]);
+  const report = cli.executeOnFiles([`${directory}/`]);
   tools.log.info('DONE cli.executeOnFiles.');
 
   // fixableErrorCount, fixableWarningCount are available too
