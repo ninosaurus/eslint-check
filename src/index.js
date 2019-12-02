@@ -1,4 +1,4 @@
-import { join, resolve } from 'path';
+import { join, extname } from 'path';
 import { CLIEngine } from 'eslint';
 import * as github from '@actions/github';
 import * as core from '@actions/core';
@@ -170,9 +170,26 @@ async function run() {
     tools.log.info('Commit from GraphQL:', currentSha);
     const files = prInfo.repository.pullRequest.files.nodes;
     tools.log.info(files);
-
+    const EXTENSIONS_TO_LINT = new Set([
+      '.mjs',
+      '.js',
+      '.ts',
+      '.jsx',
+      '.tsx'
+    ]);
+    const filesToLint = files
+      .filter((file) => EXTENSIONS_TO_LINT.has(extname(file.path)))
+      .map((file) => file.path);
+    if (filesToLint.length < 1) {
+      tools.log.warn(
+        `No files with [${[...EXTENSIONS_TO_LINT].join(
+          ', '
+        )}] extensions added or modified in this PR, nothing to lint...`
+      );
+      return;
+    }
     tools.log.info('Started linting...');
-    const { conclusion, output } = eslint(files);
+    const { conclusion, output } = eslint(filesToLint);
     tools.log.info('Ended linting.');
     tools.log.info(output.summary);
     await updateCheck(id, conclusion, output);
