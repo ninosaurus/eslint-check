@@ -172,7 +172,6 @@ async function run() {
       }
     );
     const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
-    tools.log.info('Commit from GraphQL:', currentSha);
     const files = prInfo.repository.pullRequest.files.nodes;
     tools.log.info(files);
 
