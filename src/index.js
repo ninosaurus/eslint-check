@@ -1,5 +1,4 @@
 import { join, extname, resolve } from 'path';
-import { CLIEngine } from 'eslint';
 import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
@@ -68,7 +67,11 @@ async function createCheck() {
   return id;
 }
 
-function eslint(files) {
+async function eslint(files) {
+  const CLIEngine = await (
+    await import(join(GITHUB_WORKSPACE, 'node_modules', 'eslint'))
+  ).CLIEngine;
+
   const cli = new CLIEngine({
     // useEslintrc: false,
     // configFile: resolve(GITHUB_WORKSPACE, eslintConfigPath),
