@@ -68,9 +68,9 @@ async function createCheck() {
 }
 
 async function eslint(files) {
-  const CLIEngine = await (
-    await import(join(GITHUB_WORKSPACE, 'node_modules', 'eslint'))
-  ).CLIEngine;
+  const { CLIEngine } = (
+    import(join(GITHUB_WORKSPACE, 'node_modules', 'eslint'))
+  );
 
   const cli = new CLIEngine({
     // useEslintrc: false,

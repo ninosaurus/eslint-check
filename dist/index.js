@@ -21172,9 +21172,9 @@ async function createCheck() {
 }
 
 async function eslint(files) {
-  const CLIEngine = await (
-    await __webpack_require__(70)(Object(path__WEBPACK_IMPORTED_MODULE_0__.join)(GITHUB_WORKSPACE, 'node_modules', 'eslint'))
-  ).CLIEngine;
+  const { CLIEngine } = (
+    __webpack_require__(70)(Object(path__WEBPACK_IMPORTED_MODULE_0__.join)(GITHUB_WORKSPACE, 'node_modules', 'eslint'))
+  );
 
   const cli = new CLIEngine({
     // useEslintrc: false,
