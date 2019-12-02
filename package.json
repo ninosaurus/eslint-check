@@ -19,6 +19,9 @@
     "Actions",
     "JavaScript"
   ],
+  "engines": {
+    "node": ">=12"
+  },
   "author": "Valentin Hisari <hisari.valentin@gmail.com>",
   "license": "MIT",
   "bugs": {
