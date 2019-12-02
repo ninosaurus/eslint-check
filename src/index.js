@@ -192,7 +192,8 @@ async function run() {
     ]);
     const filesToLint = files
       .filter((file) => EXTENSIONS_TO_LINT.has(extname(file.path)))
-      .map((file) => resolve(GITHUB_WORKSPACE, file.path));
+      // .map((file) => resolve(GITHUB_WORKSPACE, file.path));
+      .map((file) => file.path);
     if (filesToLint.length < 1) {
       tools.log.warn(
         `No files with [${[...EXTENSIONS_TO_LINT].join(
