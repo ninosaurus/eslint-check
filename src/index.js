@@ -79,7 +79,10 @@ async function createCheck() {
 async function updateCheck(id, conclusion, output) {
   const { context } = github;
   const { sha } = context;
+  const { owner, repo } = context.repo;
   await octokit.checks.create({
+    owner,
+    repo,
     name: 'eslint-check',
     completed_at: new Date(),
     status: 'completed',
