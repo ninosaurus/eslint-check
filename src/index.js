@@ -69,7 +69,7 @@ async function createCheck() {
 
 async function eslint(files) {
   // eslint-disable-next-line global-require,import/no-dynamic-require
-  const { CLIEngine } = require(join(GITHUB_WORKSPACE, 'node_modules', 'eslint'));
+  const { CLIEngine } = require('eslint');
 
   const cli = new CLIEngine({
     // useEslintrc: false,
