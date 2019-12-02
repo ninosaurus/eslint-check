@@ -55,7 +55,7 @@ function eslint() {
     extensions: ['.js', '.jsx', '.tsx'],
     ignorePath: '.gitignore'
   });
-  tools.log.info('START cli.executeOnFiles...');
+  tools.log.info('START cli.executeOnFiles...', getDirectories(process.cwd()));
   const report = cli.executeOnFiles(['.']);
   tools.log.info('DONE cli.executeOnFiles.');
 
