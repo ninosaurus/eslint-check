@@ -1,0 +1,25 @@
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: ESLint checker
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+      # To use this repository's private action, you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run ESLint
+        uses: ./
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
