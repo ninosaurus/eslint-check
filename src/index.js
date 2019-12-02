@@ -60,48 +60,32 @@ const headers = {
 };
 
 async function createCheck() {
-  const body = {
-    name: checkName,
-    head_sha: GITHUB_SHA,
-    status: 'in_progress',
-    started_at: new Date()
-  };
   const { context } = github;
-  const { sha: head_sha } = context;
+  const { sha } = context;
   const { owner, repo } = context.repo;
-  const data = await octokit.checks.create({
+  const { data } = await octokit.checks.create({
     owner,
     repo,
     name: 'eslint-check',
     started_at: new Date(),
     status: 'in_progress',
-    head_sha
+    head_sha: sha
   });
 
-  // const { data } = await request(`https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs`, {
-  //   method: 'POST',
-  //   headers,
-  //   body
-  // });
-  console.log(data);
   const { id } = data;
   return id;
 }
 
 async function updateCheck(id, conclusion, output) {
-  const body = {
-    name: checkName,
-    head_sha: GITHUB_SHA,
-    status: 'completed',
+  const { context } = github;
+  const { sha } = context;
+  await octokit.checks.create({
+    name: 'eslint-check',
     completed_at: new Date(),
+    status: 'completed',
+    head_sha: sha,
     conclusion,
     output
-  };
-
-  await request(`https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs/${id}`, {
-    method: 'PATCH',
-    headers,
-    body
   });
 }
 
