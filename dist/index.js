@@ -1072,28 +1072,7 @@ module.exports = require("readline");
 /* 67 */,
 /* 68 */,
 /* 69 */,
-/* 70 */
-/***/ (function(module) {
-
-function webpackEmptyAsyncContext(req) {
-	// Here Promise.resolve().then() is used instead of new Promise() to prevent
-	// uncaught exception popping up in devtools
-	return Promise.resolve().then(function() {
-		if (typeof req === 'number' && __webpack_require__.m[req])
-  return __webpack_require__(req);
-try { return require(req) }
-catch (e) { if (e.code !== 'MODULE_NOT_FOUND') throw e }
-var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	});
-}
-webpackEmptyAsyncContext.keys = function() { return []; };
-webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
-module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 70;
-
-/***/ }),
+/* 70 */,
 /* 71 */,
 /* 72 */
 /***/ (function(module, __unusedexports, __webpack_require__) {
@@ -21172,9 +21151,8 @@ async function createCheck() {
 }
 
 async function eslint(files) {
-  const { CLIEngine } = (
-    __webpack_require__(70)(Object(path__WEBPACK_IMPORTED_MODULE_0__.join)(GITHUB_WORKSPACE, 'node_modules', 'eslint'))
-  );
+  // eslint-disable-next-line global-require,import/no-dynamic-require
+  const { CLIEngine } = __webpack_require__(875)(Object(path__WEBPACK_IMPORTED_MODULE_0__.join)(GITHUB_WORKSPACE, 'node_modules', 'eslint'));
 
   const cli = new CLIEngine({
     // useEslintrc: false,
@@ -25684,7 +25662,24 @@ module.exports = function (str) {
 /* 872 */,
 /* 873 */,
 /* 874 */,
-/* 875 */,
+/* 875 */
+/***/ (function(module) {
+
+function webpackEmptyContext(req) {
+	if (typeof req === 'number' && __webpack_require__.m[req])
+  return __webpack_require__(req);
+try { return require(req) }
+catch (e) { if (e.code !== 'MODULE_NOT_FOUND') throw e }
+var e = new Error("Cannot find module '" + req + "'");
+	e.code = 'MODULE_NOT_FOUND';
+	throw e;
+}
+webpackEmptyContext.keys = function() { return []; };
+webpackEmptyContext.resolve = webpackEmptyContext;
+module.exports = webpackEmptyContext;
+webpackEmptyContext.id = 875;
+
+/***/ }),
 /* 876 */,
 /* 877 */,
 /* 878 */,
