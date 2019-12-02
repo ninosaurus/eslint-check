@@ -1,7 +1,10 @@
 import { join } from 'path';
 import { CLIEngine } from 'eslint';
+import { Toolkit } from 'actions-toolkit';
 
 const { readdirSync } = require('fs');
+
+const tools = new Toolkit();
 const request = require('./request');
 
 const {
@@ -14,13 +17,11 @@ const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
   .filter((dirent) => dirent.isDirectory())
   .map((dirent) => dirent.name);
 
-console.log(CUSTOM_DIRECTORY);
-
 if (CUSTOM_DIRECTORY) {
   const directory = join(process.cwd(), CUSTOM_DIRECTORY);
-  console.log(`New directory: ${directory}`);
+  tools.log.info(`New directory: ${directory}`);
   process.chdir(directory);
-  console.log(getDirectories(process.cwd()));
+  tools.log.info(getDirectories(process.cwd()));
 }
 
 const checkName = 'ESLint check';
@@ -50,13 +51,14 @@ async function createCheck() {
 }
 
 function eslint() {
-  // eslint-disable-next-line global-require,import/no-dynamic-require
-
   const cli = new CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
     ignorePath: '.gitignore'
   });
+  tools.log.info('START cli.executeOnFiles...');
   const report = cli.executeOnFiles(['.']);
+  tools.log.info('DONE cli.executeOnFiles.');
+
   // fixableErrorCount, fixableWarningCount are available too
   const { results, errorCount, warningCount } = report;
 
@@ -67,7 +69,7 @@ function eslint() {
   for (const result of results) {
     const { filePath, messages } = result;
     const path = filePath.substring(GITHUB_WORKSPACE.length + 1);
-    console.log({
+    tools.log.info({
       filePath,
       GITHUB_WORKSPACE,
       path
@@ -117,19 +119,22 @@ async function updateCheck(id, conclusion, output) {
 }
 
 function exitWithError(err) {
-  console.error('Error', err.stack);
+  tools.log.error('Error', err.stack);
   if (err.data) {
-    console.error(err.data);
+    tools.log.error(err.data);
   }
   process.exit(1);
 }
 
 async function run() {
-  console.log(process.env);
+  tools.log.info('Creating check...');
   const id = await createCheck();
+  tools.log.info('Created check.');
   try {
+    tools.log.info('Started linting...');
     const { conclusion, output } = eslint();
-    console.log(output.summary);
+    tools.log.info('Ended linting.');
+    tools.log.info(output.summary);
     await updateCheck(id, conclusion, output);
     if (conclusion === 'failure') {
       process.exit(78);
