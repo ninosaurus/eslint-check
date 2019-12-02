@@ -1,10 +1,10 @@
-import { join, extname } from 'path';
+import { join, extname, resolve } from 'path';
 import { CLIEngine } from 'eslint';
 import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 
-import { readdirSync, existsSync, resolve } from 'fs';
+import { readdirSync, existsSync } from 'fs';
 
 const tools = new Toolkit();
 const request = require('./request');
