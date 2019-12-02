@@ -62,6 +62,7 @@ async function createCheck() {
     started_at: new Date()
   };
   const { context } = github;
+  const { sha: head_sha } = context;
   const { owner, repo } = context.repo;
   const data = await octokit.checks.create({
     owner,
@@ -69,7 +70,7 @@ async function createCheck() {
     name: 'eslint-check',
     started_at: new Date(),
     status: 'in_progress',
-    head_sha: GITHUB_SHA
+    head_sha
   });
 
   // const { data } = await request(`https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs`, {
