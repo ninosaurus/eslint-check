@@ -70,11 +70,11 @@ function eslint(files) {
   const cli = new CLIEngine({
     useEslintrc: false,
     extensions: ['.js', '.jsx', '.tsx'],
+    configFile: resolve(GITHUB_WORKSPACE, '.eslintrc'),
     cwd: GITHUB_WORKSPACE
   });
   console.log(process.cwd(), GITHUB_WORKSPACE);
   const report = cli.executeOnFiles(files);
-  console.log('PASSED', report);
   // fixableErrorCount, fixableWarningCount are available too
   const { results, errorCount, warningCount } = report;
 
