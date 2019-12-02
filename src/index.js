@@ -3,6 +3,7 @@ import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 import { readdirSync, existsSync } from 'fs';
+import eslint from './eslint_cli';
 
 const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
 const repoToken = core.getInput('repo-token', { required: true });
@@ -65,59 +66,6 @@ async function createCheck() {
   });
   const { id } = data;
   return id;
-}
-
-function eslint(files) {
-  // eslint-disable-next-line global-require,import/no-dynamic-require
-  const { CLIEngine } = require('eslint');
-
-  const cli = new CLIEngine({
-    useEslintrc: false,
-    configFile: eslintConfigPath,
-    extensions: ['.js', '.jsx', '.tsx']
-  });
-  // console.log(process.cwd(), GITHUB_WORKSPACE);
-  console.log(files);
-  const report = cli.executeOnFiles(files);
-  // fixableErrorCount, fixableWarningCount are available too
-  const { results, errorCount, warningCount } = report;
-
-  const levels = ['', 'warning', 'failure'];
-
-  const annotations = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const result of results) {
-    const { filePath, messages } = result;
-    const path = filePath.substring(GITHUB_WORKSPACE.length + 1);
-    console.log(cli.getConfigForFile(filePath));
-    // eslint-disable-next-line no-restricted-syntax
-    for (const msg of messages) {
-      const {
-        line, severity,
-        ruleId, message
-      } = msg;
-      console.log(msg);
-      const annotationLevel = levels[severity];
-      if (!cli.isPathIgnored(filePath)) {
-        annotations.push({
-          path,
-          start_line: line,
-          end_line: line,
-          annotation_level: annotationLevel,
-          message: `[${ruleId}] ${message}`
-        });
-      }
-    }
-  }
-  console.log(annotations);
-  return {
-    conclusion: errorCount > 0 ? 'failure' : 'success',
-    output: {
-      title: checkName,
-      summary: `${errorCount} error(s), ${warningCount} warning(s) found`,
-      annotations
-    }
-  };
 }
 
 async function updateCheck(id, conclusion, output) {
@@ -207,7 +155,7 @@ async function run() {
     // filesToLint.forEach(isFileOk);
 
     tools.log.info('Started linting...');
-    const { conclusion, output } = eslint(filesToLint);
+    const { conclusion, output } = eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE);
     tools.log.info('Ended linting.');
     tools.log.info(conclusion, output.summary);
     await updateCheck(id, conclusion, output);
