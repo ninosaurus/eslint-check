@@ -40,8 +40,9 @@ const isFileOk = (path) => {
   } catch (err) {
     console.error(err);
   }
-  return false;
   console.log(`Path: ${path} is not valid`);
+
+  return false;
 };
 
 // if (customDirectory) {
