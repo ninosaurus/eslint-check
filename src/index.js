@@ -68,7 +68,9 @@ async function createCheck() {
 
 function eslint(files) {
   const cli = new CLIEngine({
+    useEslintrc: false,
     extensions: ['.js', '.jsx', '.tsx'],
+    configFile: resolve(GITHUB_WORKSPACE, '.eslintrc'),
     cwd: GITHUB_WORKSPACE,
     ignorePath: '.gitignore'
   });
