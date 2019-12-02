@@ -9,13 +9,12 @@ module.exports = () => ({
   output: {
     publicPath: './',
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
-    libraryTarget: 'umd',
-    globalObject: 'this'
+    filename: 'index.js'
   },
   target: 'node',
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    modules: [path.resolve(__dirname, 'node_modules')]
   },
   module: {
     rules: [
