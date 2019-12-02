@@ -139,12 +139,15 @@ async function run() {
     const { context } = github;
     console.log(context);
     process.exit(78);
+    const { owner, repo } = context.repo;
     return;
     // const { repo } = context;
     // const { owner } = repo;
     // var compare = await client.Repository.Commit.Compare(owner, repo, "master", "branch")
     const compareCommits = await octokit.repos.compareCommits({
-
+      owner,
+      repo,
+      base: 'master'
     });
     /*
      `
