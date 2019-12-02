@@ -5,7 +5,7 @@ module.exports = (env, argv) => {
     entry: {
       index: './src/index.js'
     },
-    target: 'node',
+    target: 'async-node',
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'index.js'
