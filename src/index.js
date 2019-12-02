@@ -94,13 +94,15 @@ function eslint(files) {
         ruleId, message
       } = msg;
       const annotationLevel = levels[severity];
-      annotations.push({
-        path,
-        start_line: line,
-        end_line: line,
-        annotation_level: annotationLevel,
-        message: `[${ruleId}] ${message}`
-      });
+      if (!cli.isPathIgnored(filePath)) {
+        annotations.push({
+          path,
+          start_line: line,
+          end_line: line,
+          annotation_level: annotationLevel,
+          message: `[${ruleId}] ${message}`
+        });
+      }
     }
   }
   console.log(annotations);
