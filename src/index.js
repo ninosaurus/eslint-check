@@ -3,8 +3,9 @@ import { CLIEngine } from 'eslint';
 import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
-
 import { readdirSync, existsSync } from 'fs';
+
+const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
 
 const tools = new Toolkit();
 const request = require('./request');
@@ -68,6 +69,8 @@ async function createCheck() {
 
 function eslint(files) {
   const cli = new CLIEngine({
+    useEslintrc: false,
+    configPath: resolve(GITHUB_WORKSPACE, eslintConfigPath),
     extensions: ['.js', '.jsx', '.tsx'],
     cwd: GITHUB_WORKSPACE
   });
