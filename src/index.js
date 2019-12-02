@@ -87,6 +87,7 @@ function eslint(files) {
   for (const result of results) {
     const { filePath, messages } = result;
     const path = filePath.substring(GITHUB_WORKSPACE.length + 1);
+    console.log(cli.getConfigForFile(filePath));
     // eslint-disable-next-line no-restricted-syntax
     for (const msg of messages) {
       const {
