@@ -1,13 +1,12 @@
 name: 'Eslint checker'
-description: 'Wait a designated number of milliseconds'
+description: 'ESLint changed files'
 inputs:
-  repo-token:  # id of input
-    description: 'number of milliseconds to wait'
+  GITHUB_TOKEN:  # id of input
+    description: 'github security token'
     required: true
-    default: '1000'
-outputs:
-  time: # output will be available to future steps
-    description: 'The message to output'
+# outputs:
+#   time: # output will be available to future steps
+#     description: 'The message to output'
 runs:
   using: 'node12'
   main: 'dist/index.js'
