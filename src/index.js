@@ -9,10 +9,15 @@ import { readdirSync, existsSync } from 'fs';
 import eslint from './eslint_cli';
 
 const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
+
 const repoToken = core.getInput('repo-token', { required: true });
 const customDirectory = core.getInput('custom-directory', { required: true });
-
 const tools = new Toolkit();
+
+octokit.authenticate({
+  token: repoToken,
+  type: 'token'
+});
 const request = require('./request');
 
 const gql = (s) => s.join('');
