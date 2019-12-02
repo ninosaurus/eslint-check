@@ -5,9 +5,12 @@ const { readdirSync } = require('fs');
 const request = require('./request');
 
 const {
-  GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE, CUSTOM_DIRECTORY
+  GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE,
+  GITHUB_REPOSITORY,
+  CUSTOM_DIRECTORY
 } = process.env;
 
+// eslint-disable-next-line import/no-dynamic-require
 const getDirectories = source => readdirSync(source, { withFileTypes: true })
   .filter(dirent => dirent.isDirectory())
   .map(dirent => dirent.name);
@@ -21,8 +24,6 @@ if (CUSTOM_DIRECTORY) {
   console.log(getDirectories(process.cwd()));
 }
 
-const repo = 'fishingbooker';
-const owner = 'FishingBookerCom';
 const checkName = 'ESLint check';
 
 const headers = {
@@ -40,7 +41,7 @@ async function createCheck() {
     started_at: new Date()
   };
 
-  const { data } = await request(`https://api.github.com/repos/${owner}/${repo}/check-runs`, {
+  const { data } = await request(`https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs`, {
     method: 'POST',
     headers,
     body
@@ -104,7 +105,7 @@ async function updateCheck(id, conclusion, output) {
     output
   };
 
-  await request(`https://api.github.com/repos/${owner}/${repo}/check-runs/${id}`, {
+  await request(`https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs/${id}`, {
     method: 'PATCH',
     headers,
     body
