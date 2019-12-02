@@ -172,6 +172,7 @@ async function run() {
       }
     );
     const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
+    tools.log.info('Commit from GraphQL:', currentSha);
     const files = prInfo.repository.pullRequest.files.nodes;
     tools.log.info(files);
 
@@ -183,8 +184,7 @@ async function run() {
     if (conclusion === 'failure') {
       process.exit(78);
     }
-  } catch
-    (err) {
+  } catch (err) {
     await updateCheck(id, 'failure');
     exitWithError(err);
   }
