@@ -63,7 +63,7 @@ async function createCheck() {
   };
   const { context } = github;
   const { owner, repo } = context.repo;
-  const data = octokit.checks.create({
+  const data = await octokit.checks.create({
     owner,
     repo,
     name: 'eslint-check',
