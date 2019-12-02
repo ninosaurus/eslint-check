@@ -1,4 +1,4 @@
-export default function eslint(files, eslintConfigPath, GITHUB_WORKSPACE) {
+export default function eslint(files, eslintConfigPath, githubWorkspace) {
   // eslint-disable-next-line global-require,import/no-dynamic-require
   const { CLIEngine } = require('eslint');
 
@@ -16,13 +16,13 @@ export default function eslint(files, eslintConfigPath, GITHUB_WORKSPACE) {
   const levels = ['', 'warning', 'failure'];
 
   const annotations = [];
-  console.log({ GITHUB_WORKSPACE });
+  console.log({ githubWorkspace });
 
   // eslint-disable-next-line no-restricted-syntax
   for (const result of results) {
     const { filePath, messages } = result;
     console.log(cli.getConfigForFile(filePath));
-    const path = filePath.substring(GITHUB_WORKSPACE.length + 1);
+    const path = filePath.substring(githubWorkspace.length + 1);
     // eslint-disable-next-line no-restricted-syntax
     for (const msg of messages) {
       const {
