@@ -72,7 +72,7 @@ function eslint(files) {
   const { CLIEngine } = require('eslint');
 
   const cli = new CLIEngine({
-    // useEslintrc: false,
+    useEslintrc: false,
     configFile: eslintConfigPath,
     extensions: ['.js', '.jsx', '.tsx']
   });
