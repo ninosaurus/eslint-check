@@ -35,11 +35,12 @@ const isFileOk = (path) => {
   try {
     if (existsSync(path)) {
       console.log(`Path: ${path} is valid`);
-      return;
+      return true;
     }
   } catch (err) {
     console.error(err);
   }
+  return false;
   console.log(`Path: ${path} is not valid`);
 };
 
