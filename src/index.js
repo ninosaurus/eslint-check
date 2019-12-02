@@ -4,7 +4,7 @@ import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 import Octokit from '@octokit/rest';
 
-const octokit = new Octokit();
+
 import { readdirSync, existsSync } from 'fs';
 import eslint from './eslint_cli';
 
@@ -14,10 +14,10 @@ const repoToken = core.getInput('repo-token', { required: true });
 const customDirectory = core.getInput('custom-directory', { required: true });
 const tools = new Toolkit();
 
-octokit.authenticate({
-  token: repoToken,
-  type: 'token'
+const octokit = new Octokit({
+  auth: `token ${repoToken}`
 });
+
 const request = require('./request');
 
 const gql = (s) => s.join('');
