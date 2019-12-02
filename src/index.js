@@ -34,12 +34,12 @@ const isFileOk = (path) => {
   console.log(`Path: ${path} is not valid`);
 };
 
-if (customDirectory) {
-  const directory = join(process.cwd(), customDirectory);
-  tools.log.info(`New directory: ${directory}`);
-  process.chdir(directory);
-  tools.log.info(getDirectories(process.cwd()));
-}
+// if (customDirectory) {
+//   const directory = join(process.cwd(), customDirectory);
+//   tools.log.info(`New directory: ${directory}`);
+//   process.chdir(directory);
+//   tools.log.info(getDirectories(process.cwd()));
+// }
 
 const checkName = 'ESLint check';
 

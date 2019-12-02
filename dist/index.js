@@ -21138,12 +21138,12 @@ const isFileOk = (path) => {
   console.log(`Path: ${path} is not valid`);
 };
 
-if (customDirectory) {
-  const directory = Object(path__WEBPACK_IMPORTED_MODULE_0__.join)(process.cwd(), customDirectory);
-  tools.log.info(`New directory: ${directory}`);
-  process.chdir(directory);
-  tools.log.info(getDirectories(process.cwd()));
-}
+// if (customDirectory) {
+//   const directory = join(process.cwd(), customDirectory);
+//   tools.log.info(`New directory: ${directory}`);
+//   process.chdir(directory);
+//   tools.log.info(getDirectories(process.cwd()));
+// }
 
 const checkName = 'ESLint check';
 
