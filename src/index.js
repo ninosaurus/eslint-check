@@ -1,22 +1,29 @@
 import { join, extname, resolve } from 'path';
-import { CLIEngine } from 'eslint';
 import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
+import Octokit from '@octokit/rest';
+
+
 import { readdirSync, existsSync } from 'fs';
+import eslint from './eslint_cli';
 
 const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
+
 const repoToken = core.getInput('repo-token', { required: true });
 const customDirectory = core.getInput('custom-directory', { required: true });
-
 const tools = new Toolkit();
+
+const octokit = new Octokit({
+  auth: `token ${repoToken}`
+});
+
 const request = require('./request');
 
 const gql = (s) => s.join('');
 
 const {
-  GITHUB_SHA, GITHUB_WORKSPACE,
-  GITHUB_REPOSITORY
+  GITHUB_WORKSPACE
 } = process.env;
 
 const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
@@ -27,20 +34,22 @@ const isFileOk = (path) => {
   try {
     if (existsSync(path)) {
       console.log(`Path: ${path} is valid`);
-      return;
+      return true;
     }
   } catch (err) {
     console.error(err);
   }
   console.log(`Path: ${path} is not valid`);
+
+  return false;
 };
 
-if (customDirectory) {
-  const directory = join(process.cwd(), customDirectory);
-  tools.log.info(`New directory: ${directory}`);
-  process.chdir(directory);
-  tools.log.info(getDirectories(process.cwd()));
-}
+// if (customDirectory) {
+//   const directory = join(process.cwd(), customDirectory);
+//   tools.log.info(`New directory: ${directory}`);
+//   process.chdir(directory);
+//   tools.log.info(getDirectories(process.cwd()));
+// }
 
 const checkName = 'ESLint check';
 
@@ -52,86 +61,35 @@ const headers = {
 };
 
 async function createCheck() {
-  const body = {
-    name: checkName,
-    head_sha: GITHUB_SHA,
+  const { context } = github;
+  const { sha } = context;
+  const { owner, repo } = context.repo;
+  const { data } = await octokit.checks.create({
+    owner,
+    repo,
+    name: 'eslint-check',
+    started_at: new Date(),
     status: 'in_progress',
-    started_at: new Date()
-  };
-
-  const { data } = await request(`https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs`, {
-    method: 'POST',
-    headers,
-    body
+    head_sha: sha
   });
+
   const { id } = data;
   return id;
 }
 
-function eslint(files) {
-  const cli = new CLIEngine({
-    // useEslintrc: false,
-    // configFile: resolve(GITHUB_WORKSPACE, eslintConfigPath),
-    extensions: ['.js', '.jsx', '.tsx'],
-    cwd: resolve(GITHUB_WORKSPACE, customDirectory)
-  });
-  // console.log(process.cwd(), GITHUB_WORKSPACE);
-  const report = cli.executeOnFiles(files);
-  // fixableErrorCount, fixableWarningCount are available too
-  const { results, errorCount, warningCount } = report;
-
-  const levels = ['', 'warning', 'failure'];
-
-  const annotations = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const result of results) {
-    const { filePath, messages } = result;
-    const path = filePath.substring(GITHUB_WORKSPACE.length + 1);
-    console.log(cli.getConfigForFile(filePath));
-    // eslint-disable-next-line no-restricted-syntax
-    for (const msg of messages) {
-      const {
-        line, severity,
-        ruleId, message
-      } = msg;
-      console.log(msg);
-      const annotationLevel = levels[severity];
-      if (!cli.isPathIgnored(filePath)) {
-        annotations.push({
-          path,
-          start_line: line,
-          end_line: line,
-          annotation_level: annotationLevel,
-          message: `[${ruleId}] ${message}`
-        });
-      }
-    }
-  }
-  console.log(annotations);
-  return {
-    conclusion: errorCount > 0 ? 'failure' : 'success',
-    output: {
-      title: checkName,
-      summary: `${errorCount} error(s), ${warningCount} warning(s) found`,
-      annotations
-    }
-  };
-}
-
 async function updateCheck(id, conclusion, output) {
-  const body = {
-    name: checkName,
-    head_sha: GITHUB_SHA,
-    status: 'completed',
+  const { context } = github;
+  const { sha } = context;
+  const { owner, repo } = context.repo;
+  await octokit.checks.create({
+    owner,
+    repo,
+    name: 'eslint-check',
     completed_at: new Date(),
+    status: 'completed',
+    head_sha: sha,
     conclusion,
     output
-  };
-
-  await request(`https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs/${id}`, {
-    method: 'PATCH',
-    headers,
-    body
   });
 }
 
@@ -144,8 +102,7 @@ function exitWithError(err) {
 }
 
 async function run() {
-  // tools.log.info(process.env);
-  // tools.log.info(process.cwd());
+  tools.log.info(process.env);
   const id = await createCheck();
   tools.log.info(`Created check. Id: ${id}`);
   try {
@@ -190,8 +147,9 @@ async function run() {
       '.tsx'
     ]);
     const filesToLint = files
-      .filter((file) => EXTENSIONS_TO_LINT.has(extname(file.path)))
-      .map((file) => resolve(GITHUB_WORKSPACE, file.path));
+      .filter((file) => EXTENSIONS_TO_LINT.has(extname(file.path)) && isFileOk(file.path))
+      // .map((file) => resolve(GITHUB_WORKSPACE, file.path));
+      .map((file) => file.path);
     if (filesToLint.length < 1) {
       tools.log.warn(
         `No files with [${[...EXTENSIONS_TO_LINT].join(
@@ -201,10 +159,8 @@ async function run() {
       return;
     }
 
-    // filesToLint.forEach(isFileOk);
-
     tools.log.info('Started linting...');
-    const { conclusion, output } = eslint(filesToLint);
+    const { conclusion, output } = eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE);
     tools.log.info('Ended linting.');
     tools.log.info(conclusion, output.summary);
     await updateCheck(id, conclusion, output);
