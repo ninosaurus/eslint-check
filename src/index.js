@@ -9,6 +9,8 @@ const { readdirSync } = require('fs');
 const tools = new Toolkit();
 const request = require('./request');
 
+const gql = (s) => s.join('');
+
 const {
   GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE,
   GITHUB_REPOSITORY,
@@ -139,43 +141,36 @@ async function run() {
     const { context } = github;
     console.log(context);
     process.exit(78);
-    const { owner, repo } = context.repo;
-    return;
     // const { repo } = context;
     // const { owner } = repo;
     // var compare = await client.Repository.Commit.Compare(owner, repo, "master", "branch")
-    const compareCommits = await octokit.repos.compareCommits({
-      owner,
-      repo,
-      base: 'master'
-    });
-    /*
-     `
-     query($owner: String!, $name: String!, $prNumber: Int!) {
-     repository(owner: $owner, name: $name) {
-     pullRequest(number: $prNumber) {
-     files(first: 100) {
-     nodes {
-     path
-     }
-     }
-     commits(last: 1) {
-     nodes {
-     commit {
-     oid
-     }
-     }
-     }
-     }
-     }
-     }
-     `,
-     {
-     owner: context.repo.owner,
-     name: context.repo.repo,
-     prNumber: context.issue.number
-     }
-     */
+    const prInfo = await octokit.graphql(
+      gql`
+      query($owner: String!, $name: String!, $prNumber: Int!) {
+        repository(owner: $owner, name: $name) {
+          pullRequest(number: $prNumber) {
+            files(first: 100) {
+              nodes {
+                path
+              }
+            }
+            commits(last: 1) {
+              nodes {
+                commit {
+                  oid
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+      {
+        owner: context.repo.owner,
+        name: context.repo.repo,
+        prNumber: context.issue.number
+      }
+    );
     const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
     tools.log.info('Commit from GraphQL:', currentSha);
     const files = prInfo.repository.pullRequest.files.nodes;
@@ -189,7 +184,8 @@ async function run() {
     if (conclusion === 'failure') {
       process.exit(78);
     }
-  } catch (err) {
+  } catch
+    (err) {
     await updateCheck(id, 'failure');
     exitWithError(err);
   }
