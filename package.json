@@ -2,7 +2,7 @@
   "name": "eslint-check",
   "version": "1.0.0",
   "description": "Eslint check action",
-  "main": "/dist/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "lint": "eslint ./src/index.js",
     "package": "rm -rf dist && ncc build src/index.js",
@@ -19,6 +19,9 @@
     "Actions",
     "JavaScript"
   ],
+  "engines": {
+    "node": ">=12"
+  },
   "author": "Valentin Hisari <hisari.valentin@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -30,7 +33,7 @@
     "@actions/github": "^1.1.0",
     "@babel/runtime": "^7.7.4",
     "actions-toolkit": "^2.2.0",
-    "eslint": "^6.7.1"
+    "eslint": "^6.7.2"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
@@ -39,9 +42,6 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.17.0",
-    "jest": "^24.9.0",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-node-externals": "^1.7.2"
+    "jest": "^24.9.0"
   }
 }
