@@ -70,7 +70,7 @@ function eslint(files) {
   const cli = new CLIEngine({
     useEslintrc: false,
     extensions: ['.js', '.jsx', '.tsx'],
-    configFile: resolve(GITHUB_WORKSPACE, '.eslintrc'),
+    configFile: '.eslintrc',
     cwd: GITHUB_WORKSPACE,
     ignorePath: '.gitignore'
   });
