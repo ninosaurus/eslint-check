@@ -9,7 +9,8 @@ module.exports = () => ({
   output: {
     publicPath: './',
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js'
+    filename: 'index.js',
+    libraryTarget: 'umd'
   },
   target: 'node',
   resolve: {
