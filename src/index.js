@@ -72,7 +72,7 @@ function eslint(files) {
     ignorePath: '.gitignore'
   });
   const report = cli.executeOnFiles(files);
-
+  console.log('PASSED', report);
   // fixableErrorCount, fixableWarningCount are available too
   const { results, errorCount, warningCount } = report;
 
