@@ -134,7 +134,7 @@ async function run() {
   tools.log.info('Created check.');
   try {
     const octokit = new github.GitHub(
-      core.getInput('GITHUB_TOKEN', { required: true })
+      core.getInput('repo-token', { required: true })
     );
     const { context } = github;
     const prInfo = await octokit.graphql(
