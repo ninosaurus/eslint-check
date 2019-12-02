@@ -2,6 +2,9 @@ import { join, extname, resolve } from 'path';
 import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
+import Octokit from '@octokit/rest';
+
+const octokit = new Octokit();
 import { readdirSync, existsSync } from 'fs';
 import eslint from './eslint_cli';
 
@@ -58,12 +61,23 @@ async function createCheck() {
     status: 'in_progress',
     started_at: new Date()
   };
-
-  const { data } = await request(`https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs`, {
-    method: 'POST',
-    headers,
-    body
+  const { context } = github;
+  const { owner, repo } = context.repo;
+  const data = octokit.checks.create({
+    owner,
+    repo,
+    name: 'eslint-check',
+    started_at: new Date(),
+    status: 'in_progress',
+    head_sha: GITHUB_SHA
   });
+
+  // const { data } = await request(`https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs`, {
+  //   method: 'POST',
+  //   headers,
+  //   body
+  // });
+  console.log(data);
   const { id } = data;
   return id;
 }
