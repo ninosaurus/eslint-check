@@ -1,5 +1,7 @@
 import { join, resolve } from 'path';
 import { CLIEngine } from 'eslint';
+import * as github from '@actions/github';
+import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 
 const { readdirSync } = require('fs');
@@ -50,15 +52,12 @@ async function createCheck() {
   return id;
 }
 
-function eslint() {
+function eslint(files) {
   const cli = new CLIEngine({
     extensions: ['.js', '.jsx', '.tsx'],
     ignorePath: '.gitignore'
   });
-  const directory = resolve(GITHUB_WORKSPACE, './');
-  tools.log.info('START cli.executeOnFiles...', directory, getDirectories(directory));
-  const report = cli.executeOnFiles([`${directory}/`]);
-  tools.log.info('DONE cli.executeOnFiles.');
+  const report = cli.executeOnFiles(files);
 
   // fixableErrorCount, fixableWarningCount are available too
   const { results, errorCount, warningCount } = report;
@@ -134,8 +133,44 @@ async function run() {
   const id = await createCheck();
   tools.log.info('Created check.');
   try {
+    const octokit = new github.GitHub(
+      core.getInput('GITHUB_TOKEN', { required: true })
+    );
+    const { context } = github;
+    const prInfo = await octokit.graphql(
+      `
+      query($owner: String!, $name: String!, $prNumber: Int!) {
+        repository(owner: $owner, name: $name) {
+          pullRequest(number: $prNumber) {
+            files(first: 100) {
+              nodes {
+                path
+              }
+            }
+            commits(last: 1) {
+              nodes {
+                commit {
+                  oid
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+      {
+        owner: context.repo.owner,
+        name: context.repo.repo,
+        prNumber: context.issue.number
+      }
+    );
+    const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
+    tools.log.info('Commit from GraphQL:', currentSha);
+    const files = prInfo.repository.pullRequest.files.nodes;
+    tools.log.info(files);
+
     tools.log.info('Started linting...');
-    const { conclusion, output } = eslint();
+    const { conclusion, output } = eslint(files);
     tools.log.info('Ended linting.');
     tools.log.info(output.summary);
     await updateCheck(id, conclusion, output);
