@@ -93,6 +93,7 @@ function eslint(files) {
         line, severity,
         ruleId, message
       } = msg;
+      console.log(msg);
       const annotationLevel = levels[severity];
       if (!cli.isPathIgnored(filePath)) {
         annotations.push({
