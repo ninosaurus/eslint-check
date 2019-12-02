@@ -71,6 +71,8 @@ function eslint(files) {
     extensions: ['.js', '.jsx', '.tsx'],
     ignorePath: '.gitignore'
   });
+  console.log(process.cwd());
+
   const report = cli.executeOnFiles(files);
   console.log('PASSED', report);
   // fixableErrorCount, fixableWarningCount are available too
