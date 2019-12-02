@@ -2,9 +2,11 @@ import { join, extname, resolve } from 'path';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 import Octokit from '@octokit/rest';
-
 import { readdirSync, existsSync } from 'fs';
+
 import eslint from './eslint_cli';
+
+import(/* webpackMode: "eager" */ '@actions/github');
 
 const github = require('@actions/github');
 
