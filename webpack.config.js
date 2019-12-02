@@ -14,7 +14,7 @@ module.exports = () => ({
   target: 'node',
   resolve: {
     extensions: ['.js', '.jsx'],
-    modules: [path.resolve(__dirname, 'node_modules')]
+    modules: ['node_modules']
   },
   module: {
     rules: [
