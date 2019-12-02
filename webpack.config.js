@@ -1,15 +1,19 @@
+const webpack = require('webpack');
 const path = require('path');
-
+const nodeExternals = require('webpack-node-externals');
+const nodeEnv = process.env.NODE_ENV;
 module.exports = (env, argv) => {
   return {
     entry: {
       index: './src/index.js'
     },
-    target: 'async-node',
     output: {
+      publicPath: './',
       path: path.resolve(__dirname, 'dist'),
-      filename: 'index.js'
+      filename: 'index.js',
+      libraryTarget: 'commonjs2'
     },
+    target: 'node',
     resolve: {
       extensions: ['.js', '.jsx'],
       modules: [path.resolve(__dirname, 'node_modules')]
@@ -22,11 +26,22 @@ module.exports = (env, argv) => {
           use: {
             loader: 'babel-loader',
             options: {
-              envName: argv.mode === 'production' ? 'production' : 'development'
+              babelrc: true
             }
           }
         }
       ]
-    }
+    },
+    externals: [
+      nodeExternals()
+    ],
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify(nodeEnv)
+        }
+      }),
+      new webpack.NamedModulesPlugin()
+    ]
   };
 };
