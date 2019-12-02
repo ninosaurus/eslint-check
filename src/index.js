@@ -6,6 +6,7 @@ import { Toolkit } from 'actions-toolkit';
 import { readdirSync, existsSync } from 'fs';
 
 const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
+const repoToken = core.getInput('repo-token', { required: true });
 const customDirectory = core.getInput('custom-directory', { required: true });
 
 const tools = new Toolkit();
@@ -14,7 +15,7 @@ const request = require('./request');
 const gql = (s) => s.join('');
 
 const {
-  GITHUB_SHA, GITHUB_TOKEN, GITHUB_WORKSPACE,
+  GITHUB_SHA, GITHUB_WORKSPACE,
   GITHUB_REPOSITORY
 } = process.env;
 
@@ -46,7 +47,7 @@ const checkName = 'ESLint check';
 const headers = {
   'Content-Type': 'application/json',
   Accept: 'application/vnd.github.antiope-preview+json',
-  Authorization: `Bearer ${GITHUB_TOKEN}`,
+  Authorization: `Bearer ${repoToken}`,
   'User-Agent': 'eslint-action'
 };
 
@@ -74,7 +75,7 @@ function eslint(files) {
     extensions: ['.js', '.jsx', '.tsx'],
     cwd: resolve(GITHUB_WORKSPACE, customDirectory)
   });
-  console.log(process.cwd(), GITHUB_WORKSPACE);
+  // console.log(process.cwd(), GITHUB_WORKSPACE);
   const report = cli.executeOnFiles(files);
   // fixableErrorCount, fixableWarningCount are available too
   const { results, errorCount, warningCount } = report;
@@ -86,11 +87,6 @@ function eslint(files) {
   for (const result of results) {
     const { filePath, messages } = result;
     const path = filePath.substring(GITHUB_WORKSPACE.length + 1);
-    tools.log.info({
-      filePath,
-      GITHUB_WORKSPACE,
-      path
-    });
     // eslint-disable-next-line no-restricted-syntax
     for (const msg of messages) {
       const {
@@ -107,7 +103,7 @@ function eslint(files) {
       });
     }
   }
-
+  console.log(annotations);
   return {
     conclusion: errorCount > 0 ? 'failure' : 'success',
     output: {
@@ -144,15 +140,12 @@ function exitWithError(err) {
 }
 
 async function run() {
-  tools.log.info(process.env);
-  tools.log.info(process.cwd());
-  tools.log.info('Creating check...');
+  // tools.log.info(process.env);
+  // tools.log.info(process.cwd());
   const id = await createCheck();
-  tools.log.info('Created check.');
+  tools.log.info(`Created check. Id: ${id}`);
   try {
-    const octokit = new github.GitHub(
-      core.getInput('repo-token', { required: true })
-    );
+    const octokit = new github.GitHub(repoToken);
     const { context } = github;
     const prInfo = await octokit.graphql(
       gql`
@@ -181,10 +174,10 @@ async function run() {
         prNumber: context.issue.number
       }
     );
-    const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
-    tools.log.info('Commit from GraphQL:', currentSha);
+    // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
+    // tools.log.info('Commit from GraphQL:', currentSha);
     const files = prInfo.repository.pullRequest.files.nodes;
-    tools.log.info(files);
+    // tools.log.info(files);
     const EXTENSIONS_TO_LINT = new Set([
       '.mjs',
       '.js',
@@ -204,12 +197,12 @@ async function run() {
       return;
     }
 
-    filesToLint.forEach(isFileOk);
+    // filesToLint.forEach(isFileOk);
 
     tools.log.info('Started linting...');
     const { conclusion, output } = eslint(filesToLint);
     tools.log.info('Ended linting.');
-    tools.log.info(output.summary);
+    tools.log.info(conclusion, output.summary);
     await updateCheck(id, conclusion, output);
     if (conclusion === 'failure') {
       process.exit(78);
