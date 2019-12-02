@@ -4,7 +4,7 @@ import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 
-const { readdirSync } = require('fs');
+import { readdirSync, access, F_OK } from 'fs';
 
 const tools = new Toolkit();
 const request = require('./request');
@@ -20,6 +20,15 @@ const {
 const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
   .filter((dirent) => dirent.isDirectory())
   .map((dirent) => dirent.name);
+
+const isFileOk = (path) => (access(path, F_OK, (err) => {
+  if (err) {
+    console.error(err);
+    return false;
+  }
+
+  return true;
+}));
 
 if (CUSTOM_DIRECTORY) {
   const directory = join(process.cwd(), CUSTOM_DIRECTORY);
@@ -187,6 +196,10 @@ async function run() {
         )}] extensions added or modified in this PR, nothing to lint...`
       );
       return;
+    }
+
+    if (!filesToLint.every(isFileOk)) {
+      console.log('Something not fine', process.cwd());
     }
     tools.log.info('Started linting...');
     const { conclusion, output } = eslint(filesToLint);
