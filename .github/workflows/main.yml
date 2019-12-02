@@ -21,9 +21,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: npm install
-        run: npm ci --ignore-scripts
-
       - name: Run ESLint
         uses: ./
         with:

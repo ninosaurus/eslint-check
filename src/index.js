@@ -1,12 +1,14 @@
 import { join, extname, resolve } from 'path';
-import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 import Octokit from '@octokit/rest';
-
-
 import { readdirSync, existsSync } from 'fs';
+
 import eslint from './eslint_cli';
+
+require.resolve('@actions/github');
+
+const github = require('@actions/github');
 
 const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
 
