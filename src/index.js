@@ -76,6 +76,7 @@ function eslint(files) {
     // cwd: resolve(GITHUB_WORKSPACE, customDirectory)
   });
   // console.log(process.cwd(), GITHUB_WORKSPACE);
+  console.log(files);
   const report = cli.executeOnFiles(files);
   // fixableErrorCount, fixableWarningCount are available too
   const { results, errorCount, warningCount } = report;
