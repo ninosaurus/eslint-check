@@ -11,8 +11,7 @@ module.exports = (env, argv) => {
     output: {
       publicPath: './',
       path: path.resolve(__dirname, 'dist'),
-      filename: 'index.js',
-      libraryTarget: 'commonjs2'
+      filename: 'index.js'
     },
     target: 'node',
     resolve: {
