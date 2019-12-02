@@ -4,7 +4,7 @@ import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 
-import { readdirSync, access, F_OK } from 'fs';
+import { readdirSync, existsSync } from 'fs';
 
 const tools = new Toolkit();
 const request = require('./request');
@@ -21,14 +21,16 @@ const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
   .filter((dirent) => dirent.isDirectory())
   .map((dirent) => dirent.name);
 
-const isFileOk = (path) => (access(path, F_OK, (err) => {
-  if (err) {
+const isFileOk = (path) => {
+  try {
+    if (existsSync(path)) {
+      return true;
+    }
+  } catch (err) {
     console.error(err);
-    return false;
   }
-
-  return true;
-}));
+  return false;
+};
 
 if (CUSTOM_DIRECTORY) {
   const directory = join(process.cwd(), CUSTOM_DIRECTORY);
