@@ -139,11 +139,6 @@ async function run() {
       core.getInput('repo-token', { required: true })
     );
     const { context } = github;
-    console.log(context);
-    process.exit(78);
-    // const { repo } = context;
-    // const { owner } = repo;
-    // var compare = await client.Repository.Commit.Compare(owner, repo, "master", "branch")
     const prInfo = await octokit.graphql(
       gql`
       query($owner: String!, $name: String!, $prNumber: Int!) {
