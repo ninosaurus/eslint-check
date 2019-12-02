@@ -6,7 +6,7 @@ import { readdirSync, existsSync } from 'fs';
 
 import eslint from './eslint_cli';
 
-import(/* webpackMode: "eager" */ '@actions/github');
+require.resolve('@actions/github');
 
 const github = require('@actions/github');
 
