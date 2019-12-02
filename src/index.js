@@ -128,6 +128,8 @@ function exitWithError(err) {
 }
 
 async function run() {
+  tools.log.info(process.env);
+  tools.log.info(process.cwd());
   tools.log.info('Creating check...');
   const id = await createCheck();
   tools.log.info('Created check.');
