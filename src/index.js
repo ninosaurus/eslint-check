@@ -147,7 +147,7 @@ async function run() {
       '.tsx'
     ]);
     const filesToLint = files
-      .filter((file) => EXTENSIONS_TO_LINT.has(extname(file.path)))
+      .filter((file) => EXTENSIONS_TO_LINT.has(extname(file.path)) && isFileOk(file.path))
       // .map((file) => resolve(GITHUB_WORKSPACE, file.path));
       .map((file) => file.path);
     if (filesToLint.length < 1) {
@@ -158,8 +158,6 @@ async function run() {
       );
       return;
     }
-
-    filesToLint.forEach(isFileOk);
 
     tools.log.info('Started linting...');
     const { conclusion, output } = eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE);
