@@ -73,7 +73,7 @@ function eslint(files) {
 
   const cli = new CLIEngine({
     // useEslintrc: false,
-    configFile: resolve(GITHUB_WORKSPACE, eslintConfigPath),
+    configFile: eslintConfigPath,
     extensions: ['.js', '.jsx', '.tsx'],
     cwd: GITHUB_WORKSPACE
   });
