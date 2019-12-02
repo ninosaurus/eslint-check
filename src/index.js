@@ -159,7 +159,7 @@ async function run() {
       return;
     }
 
-    // filesToLint.forEach(isFileOk);
+    filesToLint.forEach(isFileOk);
 
     tools.log.info('Started linting...');
     const { conclusion, output } = eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE);
