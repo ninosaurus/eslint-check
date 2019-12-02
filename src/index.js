@@ -56,7 +56,7 @@ function eslint() {
     ignorePath: '.gitignore'
   });
   tools.log.info('START cli.executeOnFiles...', getDirectories(process.cwd()));
-  const report = cli.executeOnFiles(['.']);
+  const report = cli.executeOnFiles(['./']);
   tools.log.info('DONE cli.executeOnFiles.');
 
   // fixableErrorCount, fixableWarningCount are available too
