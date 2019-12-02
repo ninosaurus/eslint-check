@@ -72,7 +72,7 @@ function eslint(files) {
     useEslintrc: false,
     configPath: resolve(GITHUB_WORKSPACE, eslintConfigPath),
     extensions: ['.js', '.jsx', '.tsx'],
-    cwd: resolve(GITHUB_WORKSPACE, eslintConfigPath)
+    cwd: resolve(GITHUB_WORKSPACE, customDirectory)
   });
   console.log(process.cwd(), GITHUB_WORKSPACE);
   const report = cli.executeOnFiles(files);
