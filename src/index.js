@@ -55,7 +55,7 @@ function eslint() {
     extensions: ['.js', '.jsx', '.tsx'],
     ignorePath: '.gitignore'
   });
-  const directory = resolve(__dirname, './');
+  const directory = resolve(GITHUB_WORKSPACE, './');
   tools.log.info('START cli.executeOnFiles...', directory, getDirectories(directory));
   const report = cli.executeOnFiles([directory]);
   tools.log.info('DONE cli.executeOnFiles.');
