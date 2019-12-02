@@ -71,8 +71,7 @@ function eslint(files) {
     useEslintrc: false,
     extensions: ['.js', '.jsx', '.tsx'],
     configFile: '.eslintrc',
-    cwd: GITHUB_WORKSPACE,
-    ignorePath: '.gitignore'
+    cwd: GITHUB_WORKSPACE
   });
   console.log(process.cwd(), GITHUB_WORKSPACE);
   const report = cli.executeOnFiles(files);
