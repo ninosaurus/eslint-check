@@ -31,11 +31,7 @@ module.exports = () => ({
     ]
   },
   externals: [
-    nodeExternals([
-      {
-        whitelist: ['@actions/github']
-      }
-    ])
+    nodeExternals()
   ],
   plugins: [
     new webpack.NamedModulesPlugin()
