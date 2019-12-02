@@ -31,7 +31,7 @@ const isFileOk = (path) => {
   } catch (err) {
     console.error(err);
   }
-  console.log(`Path: ${path} is NOT valid`);
+  console.log(`Path: ${path} is not valid`);
 };
 
 if (customDirectory) {
