@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { CLIEngine } from 'eslint';
 import { Toolkit } from 'actions-toolkit';
 
@@ -55,8 +55,9 @@ function eslint() {
     extensions: ['.js', '.jsx', '.tsx'],
     ignorePath: '.gitignore'
   });
-  tools.log.info('START cli.executeOnFiles...', getDirectories(process.cwd()));
-  const report = cli.executeOnFiles(['./']);
+  const directory = resolve(__dirname, './');
+  tools.log.info('START cli.executeOnFiles...', directory, getDirectories(directory));
+  const report = cli.executeOnFiles([directory]);
   tools.log.info('DONE cli.executeOnFiles.');
 
   // fixableErrorCount, fixableWarningCount are available too
