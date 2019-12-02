@@ -10,10 +10,9 @@ const {
   CUSTOM_DIRECTORY
 } = process.env;
 
-// eslint-disable-next-line import/no-dynamic-require
-const getDirectories = source => readdirSync(source, { withFileTypes: true })
-  .filter(dirent => dirent.isDirectory())
-  .map(dirent => dirent.name);
+const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
+  .filter((dirent) => dirent.isDirectory())
+  .map((dirent) => dirent.name);
 
 console.log(CUSTOM_DIRECTORY);
 
