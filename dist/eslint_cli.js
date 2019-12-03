@@ -29,8 +29,9 @@ async function eslint(files, eslintConfigPath, githubWorkspace, customDirectory)
     return module.default;
   });
   const cli = new CLIEngine({
-    // useEslintrc: false,
-    // configFile: path.join(githubWorkspace, eslintConfigPath),
+    useEslintrc: false,
+    configFile: _path.default.join(githubWorkspace, eslintConfigPath),
+    resolvePluginsRelativeTo: _path.default.join(githubWorkspace, customDirectory, 'node_modules'),
     extensions: ['.js', '.jsx', '.tsx']
   });
   console.log(files);
