@@ -10,15 +10,13 @@ var core = _interopRequireWildcard(require("@actions/core"));
 
 var _actionsToolkit = require("actions-toolkit");
 
-var _rest = _interopRequireDefault(require("@octokit/rest"));
+var github = _interopRequireWildcard(require("@actions/github"));
 
 var _fs = require("fs");
 
 var _check = require("./check");
 
 var _eslint_cli = _interopRequireDefault(require("./eslint_cli"));
-
-const github = require('@actions/github');
 
 const eslintConfigPath = core.getInput('eslint-config-path', {
   required: true
@@ -30,9 +28,6 @@ const customDirectory = core.getInput('custom-directory', {
   required: true
 });
 const tools = new _actionsToolkit.Toolkit();
-const octokit = new _rest.default({
-  auth: `${repoToken}`
-});
 
 const gql = s => s.join('');
 
@@ -68,56 +63,6 @@ const headers = {
   'User-Agent': 'eslint-action'
 };
 
-async function createCheck1() {
-  const {
-    context
-  } = github;
-  const {
-    sha
-  } = context;
-  const {
-    owner,
-    repo
-  } = context.repo;
-  const {
-    data
-  } = await octokit.checks.create({
-    owner,
-    repo,
-    name: 'eslint-check',
-    started_at: new Date(),
-    status: 'in_progress',
-    head_sha: sha
-  });
-  const {
-    id
-  } = data;
-  return id;
-}
-
-async function updateCheck1(id, conclusion, output) {
-  const {
-    context
-  } = github;
-  const {
-    sha
-  } = context;
-  const {
-    owner,
-    repo
-  } = context.repo;
-  await octokit.checks.create({
-    owner,
-    repo,
-    name: 'eslint-check',
-    completed_at: new Date(),
-    status: 'completed',
-    head_sha: sha,
-    conclusion,
-    output
-  });
-}
-
 function exitWithError(err) {
   tools.log.error('Error', err.stack);
 
@@ -140,6 +85,7 @@ async function run() {
     owner,
     repo
   } = context.repo;
+  const octokit = new github.GitHub(repoToken);
   const id = await (0, _check.createCheck)({
     octokit,
     owner,
@@ -149,7 +95,6 @@ async function run() {
   tools.log.info(`Created check. Id: ${id}`);
 
   try {
-    const octokit = new github.GitHub(repoToken);
     const {
       context
     } = github;
