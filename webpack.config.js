@@ -12,6 +12,10 @@ module.exports = () => ({
     libraryTarget: 'umd'
   },
   target: 'node',
+  node: {
+    __dirname: false,
+    __filename: false
+  },
   resolve: {
     extensions: ['.js', '.jsx'],
     modules: ['node_modules']
