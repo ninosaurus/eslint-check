@@ -10,9 +10,12 @@ export default async function eslint(files, eslintConfigPath, githubWorkspace, c
   console.log({
     cwd: process.cwd()
   });
-  const { CLIEngine } = (await import(/* webpackIgnore: true */path.join(process.cwd(),
+  const { CLIEngine } = (await import(path.join(process.cwd(),
     customDirectory,
-    'node_modules/eslint')));
+    'node_modules/eslint')).then(((module) => {
+    console.log('resolved', module);
+    return module.default;
+  })));
   const cli = new CLIEngine({
     useEslintrc: false,
     configFile: path.join(githubWorkspace, eslintConfigPath),
