@@ -1,7 +1,13 @@
 import path from 'path';
+import { readdirSync } from 'fs';
+
+const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
+  .filter((dirent) => dirent.isDirectory())
+  .map((dirent) => dirent.name);
 
 export default function eslint(files, eslintConfigPath, githubWorkspace, customDirectory) {
   console.log(path.join(githubWorkspace, customDirectory, 'node_modules/eslint'));
+  console.log(getDirectories(path.join(githubWorkspace, customDirectory, 'node_modules')));
   // eslint-disable-next-line global-require,import/no-dynamic-require
   const { CLIEngine } = require(path.join(githubWorkspace, customDirectory, 'node_modules/eslint'));
   console.log(path.join(githubWorkspace, eslintConfigPath));

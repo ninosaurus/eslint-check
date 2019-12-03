@@ -20,17 +20,11 @@ const octokit = new Octokit({
   auth: `token ${repoToken}`
 });
 
-const request = require('./request');
-
 const gql = (s) => s.join('');
 
 const {
   GITHUB_WORKSPACE
 } = process.env;
-
-const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
-  .filter((dirent) => dirent.isDirectory())
-  .map((dirent) => dirent.name);
 
 const isFileOk = (path) => {
   try {
