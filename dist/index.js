@@ -144,7 +144,14 @@ async function run() {
       process.exit(78);
     }
   } catch (err) {
-    await (0, _check.updateCheck)(id, 'failure');
+    await (0, _check.updateCheck)({
+      id,
+      conclusion: 'failure',
+      octokit,
+      repo,
+      owner,
+      sha: GITHUB_SHA
+    });
     exitWithError(err);
   }
 }
