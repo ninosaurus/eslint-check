@@ -20,7 +20,7 @@
     "JavaScript"
   ],
   "engines": {
-    "node": ">=^10.*"
+    "node": ">=^12.*"
   },
   "author": "Valentin Hisari <hisari.valentin@gmail.com>",
   "license": "MIT",

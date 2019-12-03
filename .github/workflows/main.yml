@@ -7,7 +7,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['10.*']
+        node-version: ['12.*']
 
     steps:
       # To use this repository's private action, you must check out the repository
