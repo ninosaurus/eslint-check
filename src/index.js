@@ -2,7 +2,8 @@ import { extname } from 'path';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 import Octokit from '@octokit/rest';
-import { readdirSync, existsSync } from 'fs';
+import { existsSync } from 'fs';
+import { createCheck, updateCheck } from './check';
 
 import eslint from './eslint_cli';
 
@@ -38,55 +39,6 @@ const isFileOk = (path) => {
   return false;
 };
 
-// if (customDirectory) {
-//   const directory = join(process.cwd(), customDirectory);
-//   tools.log.info(`New directory: ${directory}`);
-//   process.chdir(directory);
-//   tools.log.info(getDirectories(process.cwd()));
-// }
-
-const checkName = 'ESLint check';
-
-const headers = {
-  'Content-Type': 'application/json',
-  Accept: 'application/vnd.github.antiope-preview+json',
-  Authorization: `Bearer ${repoToken}`,
-  'User-Agent': 'eslint-action'
-};
-
-async function createCheck() {
-  const { context } = github;
-  const { sha } = context;
-  const { owner, repo } = context.repo;
-  const { data } = await octokit.checks.create({
-    owner,
-    repo,
-    name: 'eslint-check',
-    started_at: new Date(),
-    status: 'in_progress',
-    head_sha: sha
-  });
-
-  const { id } = data;
-  return id;
-}
-
-async function updateCheck(id, conclusion, output) {
-  const { context } = github;
-  const { sha } = context;
-  const { owner, repo } = context.repo;
-  await octokit.checks.create({
-    owner,
-    repo,
-    name: 'eslint-check',
-    completed_at: new Date(),
-    status: 'completed',
-    head_sha: sha,
-    conclusion,
-    output
-  });
-}
-
 function exitWithError(err) {
   tools.log.error('Error', err.stack);
   if (err.data) {
@@ -97,7 +49,16 @@ function exitWithError(err) {
 
 async function run() {
   tools.log.info(process.env);
-  const id = await createCheck();
+  const { context } = github;
+  const { sha } = context;
+  const { owner, repo } = context.repo;
+
+  const id = await createCheck({
+    octokit,
+    owner,
+    sha,
+    repo
+  });
   tools.log.info(`Created check. Id: ${id}`);
   try {
     const octokit = new github.GitHub(repoToken);
@@ -158,7 +119,15 @@ async function run() {
       customDirectory);
     tools.log.info('Ended linting.');
     tools.log.info(conclusion, output.summary);
-    await updateCheck(id, conclusion, output);
+    await updateCheck({
+      id,
+      conclusion,
+      output,
+      octokit,
+      repo,
+      owner,
+      sha
+    });
     if (conclusion === 'failure') {
       process.exit(78);
     }
