@@ -14,7 +14,7 @@ const checkName = 'eslint check';
 export async function createCheck({ owner, repo, sha }) {
   const body = {
     name: checkName,
-    sha,
+    head_sha: sha,
     status: 'in_progress',
     started_at: new Date()
   };

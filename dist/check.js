@@ -32,7 +32,7 @@ async function createCheck({
 }) {
   const body = {
     name: checkName,
-    sha,
+    head_sha: sha,
     status: 'in_progress',
     started_at: new Date()
   };
