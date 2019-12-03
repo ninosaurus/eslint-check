@@ -6,7 +6,7 @@ export default function eslint(files, eslintConfigPath, githubWorkspace, customD
 
   const cli = new CLIEngine({
     useEslintrc: false,
-    configFile: eslintConfigPath,
+    configFile: path.join(githubWorkspace, eslintConfigPath),
     extensions: ['.js', '.jsx', '.tsx']
   });
   // console.log(process.cwd(), GITHUB_WORKSPACE);
