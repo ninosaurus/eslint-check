@@ -17,7 +17,7 @@ const tools = new Toolkit();
 const gql = (s) => s.join('');
 
 const {
-  GITHUB_WORKSPACE
+  GITHUB_WORKSPACE, GITHUB_SHA
 } = process.env;
 
 const isFileOk = (path) => {
@@ -48,13 +48,12 @@ async function run() {
   });
   tools.log.info(process.env);
   const { context } = github;
-  const { sha } = context;
   const { owner, repo } = context.repo;
 
   const id = await createCheck({
     octokit,
     owner,
-    sha,
+    sha: GITHUB_SHA,
     repo
   });
   tools.log.info(`Created check. Id: ${id}`);
@@ -123,7 +122,7 @@ async function run() {
       octokit,
       repo,
       owner,
-      sha
+      sha: GITHUB_SHA
     });
     if (conclusion === 'failure') {
       process.exit(78);
