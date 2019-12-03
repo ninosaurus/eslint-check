@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = eslint;
 
+var _interopRequireWildcard2 = _interopRequireDefault(require("@babel/runtime/helpers/interopRequireWildcard"));
+
 var _path = _interopRequireDefault(require("path"));
 
 var _fs = require("fs");
@@ -22,9 +24,16 @@ async function eslint(files, eslintConfigPath, githubWorkspace, customDirectory)
   console.log({
     cwd: process.cwd()
   });
-  const cli = new _eslint.CLIEngine({
+  const {
+    CLIEngine
+  } = await Promise.resolve().then(() => (0, _interopRequireWildcard2.default)(require(`${_path.default.join(process.cwd(), customDirectory, 'node_modules/eslint')}`))).then(module => {
+    console.log('resolved', module);
+    return module.default;
+  });
+  const cli = new CLIEngine({
     useEslintrc: false,
-    configFile: '../.eslintrc',
+    configFile: _path.default.join(githubWorkspace, eslintConfigPath),
+    resolvePluginsRelativeTo: _path.default.join(githubWorkspace, customDirectory, 'node_modules'),
     extensions: ['.js', '.jsx', '.tsx']
   });
   console.log(files);
