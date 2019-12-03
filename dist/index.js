@@ -16,6 +16,8 @@ var github = _interopRequireWildcard(require("@actions/github"));
 
 var _fs = require("fs");
 
+var _graphql = require("@octokit/graphql");
+
 var _check = require("./check");
 
 var _eslint_cli = _interopRequireDefault(require("./eslint_cli"));
@@ -66,7 +68,13 @@ async function run() {
   const octokit = new _rest.default({
     auth: `token ${repoToken}`
   });
-  tools.log.info(process.env);
+
+  const graphqlWithAuth = _graphql.graphql.defaults({
+    headers: {
+      authorization: `token ${repoToken}`
+    }
+  });
+
   const {
     context
   } = github;
@@ -86,7 +94,7 @@ async function run() {
     const {
       context
     } = github;
-    const prInfo = await octokit.graphql(gql`
+    const prInfo = await graphqlWithAuth(gql`
       query($owner: String!, $name: String!, $prNumber: Int!) {
         repository(owner: $owner, name: $name) {
           pullRequest(number: $prNumber) {
@@ -109,7 +117,8 @@ async function run() {
       owner: context.repo.owner,
       name: context.repo.repo,
       prNumber: context.issue.number
-    }); // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
+    });
+    console.log(prInfo); // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
     // tools.log.info('Commit from GraphQL:', currentSha);
 
     const files = prInfo.repository.pullRequest.files.nodes; // tools.log.info(files);

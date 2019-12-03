@@ -4,6 +4,7 @@ import { Toolkit } from 'actions-toolkit';
 import Octokit from '@octokit/rest';
 import * as github from '@actions/github';
 import { readdirSync, existsSync } from 'fs';
+import { graphql } from '@octokit/graphql';
 import { createCheck, updateCheck } from './check';
 
 import eslint from './eslint_cli';
@@ -46,7 +47,11 @@ async function run() {
   const octokit = new Octokit({
     auth: `token ${repoToken}`
   });
-  tools.log.info(process.env);
+  const graphqlWithAuth = graphql.defaults({
+    headers: {
+      authorization: `token ${repoToken}`
+    }
+  });
   const { context } = github;
   const { owner, repo } = context.repo;
 
@@ -59,7 +64,7 @@ async function run() {
   tools.log.info(`Created check. Id: ${id}`);
   try {
     const { context } = github;
-    const prInfo = await octokit.graphql(
+    const prInfo = await graphqlWithAuth(
       gql`
       query($owner: String!, $name: String!, $prNumber: Int!) {
         repository(owner: $owner, name: $name) {
@@ -86,6 +91,7 @@ async function run() {
         prNumber: context.issue.number
       }
     );
+    console.log(prInfo);
     // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
     // tools.log.info('Commit from GraphQL:', currentSha);
     const files = prInfo.repository.pullRequest.files.nodes;
