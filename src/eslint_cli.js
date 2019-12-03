@@ -15,7 +15,6 @@ export default function eslint(files, eslintConfigPath, githubWorkspace) {
     configFile: path.join(githubWorkspace, eslintConfigPath),
     extensions: ['.js', '.jsx', '.tsx']
   });
-  // console.log(process.cwd(), GITHUB_WORKSPACE);
   console.log(files);
   const report = cli.executeOnFiles(files);
   // fixableErrorCount, fixableWarningCount are available too
@@ -24,12 +23,9 @@ export default function eslint(files, eslintConfigPath, githubWorkspace) {
   const levels = ['', 'warning', 'failure'];
 
   const annotations = [];
-  console.log({ githubWorkspace });
-
   // eslint-disable-next-line no-restricted-syntax
   for (const result of results) {
     const { filePath, messages } = result;
-    console.log(cli.getConfigForFile(filePath));
     const path = filePath.substring(githubWorkspace.length + 1);
     // eslint-disable-next-line no-restricted-syntax
     for (const msg of messages) {
@@ -37,7 +33,6 @@ export default function eslint(files, eslintConfigPath, githubWorkspace) {
         line, severity,
         ruleId, message
       } = msg;
-      console.log(msg);
       const annotationLevel = levels[severity];
       if (!cli.isPathIgnored(filePath)) {
         annotations.push({
