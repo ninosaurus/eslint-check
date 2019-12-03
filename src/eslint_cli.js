@@ -1,6 +1,8 @@
-export default function eslint(files, eslintConfigPath, githubWorkspace) {
+import path from 'path';
+
+export default function eslint(files, eslintConfigPath, githubWorkspace, customDirectory) {
   // eslint-disable-next-line global-require,import/no-dynamic-require
-  const { CLIEngine } = require('eslint');
+  const { CLIEngine } = require(path.join(githubWorkspace, customDirectory, 'node_modules/eslint'));
 
   const cli = new CLIEngine({
     useEslintrc: false,
