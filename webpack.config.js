@@ -35,7 +35,7 @@ module.exports = () => ({
     ]
   },
   externals: [
-    nodeExternals()
+    nodeExternals({ whitelist: ['eslint'] })
   ],
   plugins: [
     new webpack.NamedModulesPlugin()
