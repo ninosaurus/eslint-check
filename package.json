@@ -34,7 +34,7 @@
     "@babel/runtime": "^7.7.4",
     "@octokit/rest": "^16.35.0",
     "actions-toolkit": "^2.2.0",
-    "eslint": "^6.7.2"
+    "eslint": "^6.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
@@ -48,6 +48,7 @@
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.17.0",

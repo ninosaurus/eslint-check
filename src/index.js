@@ -20,17 +20,11 @@ const octokit = new Octokit({
   auth: `token ${repoToken}`
 });
 
-const request = require('./request');
-
 const gql = (s) => s.join('');
 
 const {
   GITHUB_WORKSPACE
 } = process.env;
-
-const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
-  .filter((dirent) => dirent.isDirectory())
-  .map((dirent) => dirent.name);
 
 const isFileOk = (path) => {
   try {
@@ -162,7 +156,8 @@ async function run() {
     }
 
     tools.log.info('Started linting...');
-    const { conclusion, output } = eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE);
+    const { conclusion, output } = eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE,
+      customDirectory);
     tools.log.info('Ended linting.');
     tools.log.info(conclusion, output.summary);
     await updateCheck(id, conclusion, output);
