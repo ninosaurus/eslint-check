@@ -17,8 +17,8 @@ export default async function eslint(files, eslintConfigPath, githubWorkspace, c
     return module.default;
   })));
   const cli = new CLIEngine({
-    useEslintrc: false,
-    configFile: path.join(githubWorkspace, eslintConfigPath),
+    // useEslintrc: false,
+    // configFile: path.join(githubWorkspace, eslintConfigPath),
     extensions: ['.js', '.jsx', '.tsx']
   });
   console.log(files);
