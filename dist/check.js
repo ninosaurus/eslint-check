@@ -2,21 +2,25 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.createCheck = createCheck;
 exports.updateCheck = updateCheck;
 
+var core = _interopRequireWildcard(require("@actions/core"));
+
 var _request = _interopRequireDefault(require("./request"));
 
-const {
-  GITHUB_TOKEN
-} = process.env;
+const repoToken = core.getInput('repo-token', {
+  required: true
+});
 const headers = {
   'Content-Type': 'application/json',
   Accept: 'application/vnd.github.antiope-preview+json',
-  Authorization: `Bearer ${GITHUB_TOKEN}`,
+  Authorization: `Bearer ${repoToken}`,
   'User-Agent': 'eslint-action'
 };
 const checkName = 'eslint check';

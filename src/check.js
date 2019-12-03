@@ -1,10 +1,11 @@
+import * as core from '@actions/core';
 import request from './request';
 
-const { GITHUB_TOKEN } = process.env;
+const repoToken = core.getInput('repo-token', { required: true });
 const headers = {
   'Content-Type': 'application/json',
   Accept: 'application/vnd.github.antiope-preview+json',
-  Authorization: `Bearer ${GITHUB_TOKEN}`,
+  Authorization: `Bearer ${repoToken}`,
   'User-Agent': 'eslint-action'
 };
 
