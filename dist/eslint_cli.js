@@ -13,6 +13,8 @@ var _path = _interopRequireDefault(require("path"));
 
 var _fs = require("fs");
 
+var _eslint = require("eslint");
+
 const getDirectories = source => (0, _fs.readdirSync)(source, {
   withFileTypes: true
 }).filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
@@ -29,8 +31,8 @@ async function eslint(files, eslintConfigPath, githubWorkspace, customDirectory)
     return module.default;
   });
   const cli = new CLIEngine({
-    // useEslintrc: false,
-    // configFile: path.join(githubWorkspace, eslintConfigPath),
+    useEslintrc: false,
+    configFile: '../.eslintrc',
     extensions: ['.js', '.jsx', '.tsx']
   });
   console.log(files);

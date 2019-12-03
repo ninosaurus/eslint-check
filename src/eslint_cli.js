@@ -1,5 +1,6 @@
 import path from 'path';
 import { readdirSync } from 'fs';
+import { CLIEngine } from 'eslint';
 
 const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
   .filter((dirent) => dirent.isDirectory())
@@ -17,8 +18,8 @@ export default async function eslint(files, eslintConfigPath, githubWorkspace, c
     return module.default;
   })));
   const cli = new CLIEngine({
-    // useEslintrc: false,
-    // configFile: path.join(githubWorkspace, eslintConfigPath),
+    useEslintrc: false,
+    configFile: '../.eslintrc',
     extensions: ['.js', '.jsx', '.tsx']
   });
   console.log(files);
