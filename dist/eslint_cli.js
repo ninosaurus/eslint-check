@@ -13,8 +13,6 @@ var _path = _interopRequireDefault(require("path"));
 
 var _fs = require("fs");
 
-var _eslint = require("eslint");
-
 const getDirectories = source => (0, _fs.readdirSync)(source, {
   withFileTypes: true
 }).filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);

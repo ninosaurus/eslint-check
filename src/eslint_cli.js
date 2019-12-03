@@ -1,6 +1,5 @@
 import path from 'path';
 import { readdirSync } from 'fs';
-import { CLIEngine } from 'eslint';
 
 const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
   .filter((dirent) => dirent.isDirectory())
