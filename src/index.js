@@ -58,6 +58,7 @@ async function run() {
     },
     previews: ['antiope-preview']
   });
+
   const graphqlWithAuth = graphql.defaults({
     headers: {
       authorization: `token ${repoToken}`,
