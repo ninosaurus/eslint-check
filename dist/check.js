@@ -20,7 +20,8 @@ async function createCheck({
     name: 'eslint-check',
     started_at: new Date(),
     status: 'in_progress',
-    head_sha: sha
+    head_sha: sha,
+    mediaType
   });
   const {
     id

@@ -43,12 +43,20 @@ function exitWithError(err) {
   process.exit(1);
 }
 
+const gitHubUrl = 'github.com';
+
 async function run() {
   const octokit = new Octokit({
     auth: `token ${repoToken}`,
-    previews: [
-      'antiope-preview'
-    ]
+    userAgent: 'Branch Protection script',
+    baseUrl: `https://api.${gitHubUrl}`,
+    log: {
+      debug: () => { },
+      info: () => { },
+      warn: console.warn,
+      error: console.error
+    },
+    previews: ['antiope-preview']
   });
   const graphqlWithAuth = graphql.defaults({
     headers: {
