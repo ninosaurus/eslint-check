@@ -9,9 +9,13 @@ module.exports = () => ({
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    libraryTarget: 'umd'
+    libraryTarget: 'commonjs2'
   },
   target: 'node',
+  node: {
+    __dirname: false,
+    __filename: false
+  },
   resolve: {
     extensions: ['.js', '.jsx'],
     modules: ['node_modules']
@@ -31,7 +35,7 @@ module.exports = () => ({
     ]
   },
   externals: [
-    nodeExternals()
+    nodeExternals({ whitelist: ['eslint'] })
   ],
   plugins: [
     new webpack.NamedModulesPlugin()

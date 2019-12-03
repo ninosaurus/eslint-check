@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "lint": "eslint ./src/*",
-    "build": "rm -rf dist && webpack --mode=development",
+    "build": "babel src -d dist",
     "package": "rm -rf dist && ncc build src/index.js"
   },
   "repository": {
@@ -20,7 +20,7 @@
     "JavaScript"
   ],
   "engines": {
-    "node": ">=^10.*"
+    "node": ">=^12.*"
   },
   "author": "Valentin Hisari <hisari.valentin@gmail.com>",
   "license": "MIT",
@@ -37,6 +37,7 @@
     "eslint": "^6.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.7.4",
     "@babel/core": "^7.7.2",
     "@babel/plugin-proposal-class-properties": "^7.7.0",
     "@babel/plugin-proposal-private-methods": "^7.6.0",

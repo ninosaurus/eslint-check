@@ -1,15 +1,21 @@
 import path from 'path';
 import { readdirSync } from 'fs';
-import { CLIEngine } from 'eslint';
 
 const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
   .filter((dirent) => dirent.isDirectory())
   .map((dirent) => dirent.name);
 
-export default function eslint(files, eslintConfigPath, githubWorkspace) {
-  // eslint-disable-next-line max-len
-  // eslint-disable-next-line global-require,import/no-dynamic-require,import/no-extraneous-dependencies
-  console.log(path.join(githubWorkspace, eslintConfigPath));
+export default async function eslint(files, eslintConfigPath, githubWorkspace, customDirectory) {
+  console.log(path.join(process.cwd(), customDirectory, 'node_modules/eslint'));
+  console.log({
+    cwd: process.cwd()
+  });
+  const { CLIEngine } = (await import(path.join(process.cwd(),
+    customDirectory,
+    'node_modules/eslint')).then(((module) => {
+    console.log('resolved', module);
+    return module.default;
+  })));
   const cli = new CLIEngine({
     useEslintrc: false,
     configFile: path.join(githubWorkspace, eslintConfigPath),
