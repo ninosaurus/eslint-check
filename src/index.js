@@ -1,4 +1,4 @@
-import { join, extname, resolve } from 'path';
+import { extname } from 'path';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 import Octokit from '@octokit/rest';
