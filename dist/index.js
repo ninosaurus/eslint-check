@@ -12,11 +12,15 @@ var _actionsToolkit = require("actions-toolkit");
 
 var _rest = _interopRequireDefault(require("@octokit/rest"));
 
+var github = _interopRequireWildcard(require("@actions/github"));
+
 var _fs = require("fs");
 
-var _eslint_cli = _interopRequireDefault(require("./eslint_cli"));
+var _graphql = require("@octokit/graphql");
 
-const github = require('@actions/github');
+var _check = require("./check");
+
+var _eslint_cli = _interopRequireDefault(require("./eslint_cli"));
 
 const eslintConfigPath = core.getInput('eslint-config-path', {
   required: true
@@ -28,14 +32,12 @@ const customDirectory = core.getInput('custom-directory', {
   required: true
 });
 const tools = new _actionsToolkit.Toolkit();
-const octokit = new _rest.default({
-  auth: `token ${repoToken}`
-});
 
 const gql = s => s.join('');
 
 const {
-  GITHUB_WORKSPACE
+  GITHUB_WORKSPACE,
+  GITHUB_SHA
 } = process.env;
 
 const isFileOk = path => {
@@ -50,71 +52,7 @@ const isFileOk = path => {
 
   console.log(`Path: ${path} is not valid`);
   return false;
-}; // if (customDirectory) {
-//   const directory = join(process.cwd(), customDirectory);
-//   tools.log.info(`New directory: ${directory}`);
-//   process.chdir(directory);
-//   tools.log.info(getDirectories(process.cwd()));
-// }
-
-
-const checkName = 'ESLint check';
-const headers = {
-  'Content-Type': 'application/json',
-  Accept: 'application/vnd.github.antiope-preview+json',
-  Authorization: `Bearer ${repoToken}`,
-  'User-Agent': 'eslint-action'
 };
-
-async function createCheck() {
-  const {
-    context
-  } = github;
-  const {
-    sha
-  } = context;
-  const {
-    owner,
-    repo
-  } = context.repo;
-  const {
-    data
-  } = await octokit.checks.create({
-    owner,
-    repo,
-    name: 'eslint-check',
-    started_at: new Date(),
-    status: 'in_progress',
-    head_sha: sha
-  });
-  const {
-    id
-  } = data;
-  return id;
-}
-
-async function updateCheck(id, conclusion, output) {
-  const {
-    context
-  } = github;
-  const {
-    sha
-  } = context;
-  const {
-    owner,
-    repo
-  } = context.repo;
-  await octokit.checks.create({
-    owner,
-    repo,
-    name: 'eslint-check',
-    completed_at: new Date(),
-    status: 'completed',
-    head_sha: sha,
-    conclusion,
-    output
-  });
-}
 
 function exitWithError(err) {
   tools.log.error('Error', err.stack);
@@ -126,17 +64,49 @@ function exitWithError(err) {
   process.exit(1);
 }
 
+const gitHubUrl = 'github.com';
+
 async function run() {
-  tools.log.info(process.env);
-  const id = await createCheck();
+  const octokit = new _rest.default({
+    auth: `token ${repoToken}`,
+    userAgent: 'Branch Protection script',
+    baseUrl: `https://api.${gitHubUrl}`,
+    log: {
+      debug: () => {},
+      info: () => {},
+      warn: console.warn,
+      error: console.error
+    },
+    previews: ['antiope-preview']
+  });
+
+  const graphqlWithAuth = _graphql.graphql.defaults({
+    headers: {
+      authorization: `token ${repoToken}`,
+      accept: 'application/vnd.github.antiope-preview+json'
+    }
+  });
+
+  const {
+    context
+  } = github;
+  const {
+    owner,
+    repo
+  } = context.repo;
+  const id = await (0, _check.createCheck)({
+    octokit,
+    owner,
+    sha: GITHUB_SHA,
+    repo
+  });
   tools.log.info(`Created check. Id: ${id}`);
 
   try {
-    const octokit = new github.GitHub(repoToken);
     const {
       context
     } = github;
-    const prInfo = await octokit.graphql(gql`
+    const prInfo = await graphqlWithAuth(gql`
       query($owner: String!, $name: String!, $prNumber: Int!) {
         repository(owner: $owner, name: $name) {
           pullRequest(number: $prNumber) {
@@ -159,7 +129,8 @@ async function run() {
       owner: context.repo.owner,
       name: context.repo.repo,
       prNumber: context.issue.number
-    }); // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
+    });
+    console.log(prInfo); // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
     // tools.log.info('Commit from GraphQL:', currentSha);
 
     const files = prInfo.repository.pullRequest.files.nodes; // tools.log.info(files);
@@ -180,13 +151,28 @@ async function run() {
     } = await (0, _eslint_cli.default)(filesToLint, eslintConfigPath, GITHUB_WORKSPACE, customDirectory);
     tools.log.info('Ended linting.');
     tools.log.info(conclusion, output.summary);
-    await updateCheck(id, conclusion, output);
+    await (0, _check.updateCheck)({
+      id,
+      conclusion,
+      output,
+      octokit,
+      repo,
+      owner,
+      sha: GITHUB_SHA
+    });
 
     if (conclusion === 'failure') {
       process.exit(78);
     }
   } catch (err) {
-    await updateCheck(id, 'failure');
+    await (0, _check.updateCheck)({
+      id,
+      conclusion: 'failure',
+      octokit,
+      repo,
+      owner,
+      sha: GITHUB_SHA
+    });
     exitWithError(err);
   }
 }

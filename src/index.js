@@ -2,11 +2,12 @@ import { extname } from 'path';
 import * as core from '@actions/core';
 import { Toolkit } from 'actions-toolkit';
 import Octokit from '@octokit/rest';
+import * as github from '@actions/github';
 import { readdirSync, existsSync } from 'fs';
+import { graphql } from '@octokit/graphql';
+import { createCheck, updateCheck } from './check';
 
 import eslint from './eslint_cli';
-
-const github = require('@actions/github');
 
 const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
 const repoToken = core.getInput('repo-token', { required: true });
@@ -14,14 +15,10 @@ const customDirectory = core.getInput('custom-directory', { required: true });
 
 const tools = new Toolkit();
 
-const octokit = new Octokit({
-  auth: `token ${repoToken}`
-});
-
 const gql = (s) => s.join('');
 
 const {
-  GITHUB_WORKSPACE
+  GITHUB_WORKSPACE, GITHUB_SHA
 } = process.env;
 
 const isFileOk = (path) => {
@@ -38,55 +35,6 @@ const isFileOk = (path) => {
   return false;
 };
 
-// if (customDirectory) {
-//   const directory = join(process.cwd(), customDirectory);
-//   tools.log.info(`New directory: ${directory}`);
-//   process.chdir(directory);
-//   tools.log.info(getDirectories(process.cwd()));
-// }
-
-const checkName = 'ESLint check';
-
-const headers = {
-  'Content-Type': 'application/json',
-  Accept: 'application/vnd.github.antiope-preview+json',
-  Authorization: `Bearer ${repoToken}`,
-  'User-Agent': 'eslint-action'
-};
-
-async function createCheck() {
-  const { context } = github;
-  const { sha } = context;
-  const { owner, repo } = context.repo;
-  const { data } = await octokit.checks.create({
-    owner,
-    repo,
-    name: 'eslint-check',
-    started_at: new Date(),
-    status: 'in_progress',
-    head_sha: sha
-  });
-
-  const { id } = data;
-  return id;
-}
-
-async function updateCheck(id, conclusion, output) {
-  const { context } = github;
-  const { sha } = context;
-  const { owner, repo } = context.repo;
-  await octokit.checks.create({
-    owner,
-    repo,
-    name: 'eslint-check',
-    completed_at: new Date(),
-    status: 'completed',
-    head_sha: sha,
-    conclusion,
-    output
-  });
-}
-
 function exitWithError(err) {
   tools.log.error('Error', err.stack);
   if (err.data) {
@@ -95,14 +43,41 @@ function exitWithError(err) {
   process.exit(1);
 }
 
+const gitHubUrl = 'github.com';
+
 async function run() {
-  tools.log.info(process.env);
-  const id = await createCheck();
+  const octokit = new Octokit({
+    auth: `token ${repoToken}`,
+    userAgent: 'Branch Protection script',
+    baseUrl: `https://api.${gitHubUrl}`,
+    log: {
+      debug: () => { },
+      info: () => { },
+      warn: console.warn,
+      error: console.error
+    },
+    previews: ['antiope-preview']
+  });
+
+  const graphqlWithAuth = graphql.defaults({
+    headers: {
+      authorization: `token ${repoToken}`,
+      accept: 'application/vnd.github.antiope-preview+json'
+    }
+  });
+  const { context } = github;
+  const { owner, repo } = context.repo;
+
+  const id = await createCheck({
+    octokit,
+    owner,
+    sha: GITHUB_SHA,
+    repo
+  });
   tools.log.info(`Created check. Id: ${id}`);
   try {
-    const octokit = new github.GitHub(repoToken);
     const { context } = github;
-    const prInfo = await octokit.graphql(
+    const prInfo = await graphqlWithAuth(
       gql`
       query($owner: String!, $name: String!, $prNumber: Int!) {
         repository(owner: $owner, name: $name) {
@@ -129,6 +104,7 @@ async function run() {
         prNumber: context.issue.number
       }
     );
+    console.log(prInfo);
     // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
     // tools.log.info('Commit from GraphQL:', currentSha);
     const files = prInfo.repository.pullRequest.files.nodes;
@@ -158,12 +134,27 @@ async function run() {
       customDirectory);
     tools.log.info('Ended linting.');
     tools.log.info(conclusion, output.summary);
-    await updateCheck(id, conclusion, output);
+    await updateCheck({
+      id,
+      conclusion,
+      output,
+      octokit,
+      repo,
+      owner,
+      sha: GITHUB_SHA
+    });
     if (conclusion === 'failure') {
       process.exit(78);
     }
   } catch (err) {
-    await updateCheck(id, 'failure');
+    await updateCheck({
+      id,
+      conclusion: 'failure',
+      octokit,
+      repo,
+      owner,
+      sha: GITHUB_SHA
+    });
     exitWithError(err);
   }
 }
