@@ -1,4 +1,5 @@
-(function(e, a) { for(var i in a) e[i] = a[i]; }(exports, /******/ (function(modules) { // webpackBootstrap
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -187,4 +188,4 @@ eval("module.exports = require(\"path\");\n\n//# sourceURL=webpack:///external_%
 
 /***/ })
 
-/******/ })));
+/******/ });
