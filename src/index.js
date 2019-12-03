@@ -46,9 +46,9 @@ function exitWithError(err) {
 async function run() {
   const octokit = new Octokit({
     auth: `token ${repoToken}`,
-    headers: {
-      accept: 'application/vnd.github.antiope-preview+json'
-    }
+    previews: [
+      'antiope-preview'
+    ]
   });
   const graphqlWithAuth = graphql.defaults({
     headers: {
