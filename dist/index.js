@@ -31,7 +31,7 @@ const customDirectory = core.getInput('custom-directory', {
 });
 const tools = new _actionsToolkit.Toolkit();
 const octokit = new _rest.default({
-  auth: `token ${repoToken}`
+  auth: `${repoToken}`
 });
 
 const gql = s => s.join('');
@@ -52,7 +52,71 @@ const isFileOk = path => {
 
   console.log(`Path: ${path} is not valid`);
   return false;
+}; // if (customDirectory) {
+//   const directory = join(process.cwd(), customDirectory);
+//   tools.log.info(`New directory: ${directory}`);
+//   process.chdir(directory);
+//   tools.log.info(getDirectories(process.cwd()));
+// }
+
+
+const checkName = 'ESLint check';
+const headers = {
+  'Content-Type': 'application/json',
+  Accept: 'application/vnd.github.antiope-preview+json',
+  Authorization: `Bearer ${repoToken}`,
+  'User-Agent': 'eslint-action'
 };
+
+async function createCheck1() {
+  const {
+    context
+  } = github;
+  const {
+    sha
+  } = context;
+  const {
+    owner,
+    repo
+  } = context.repo;
+  const {
+    data
+  } = await octokit.checks.create({
+    owner,
+    repo,
+    name: 'eslint-check',
+    started_at: new Date(),
+    status: 'in_progress',
+    head_sha: sha
+  });
+  const {
+    id
+  } = data;
+  return id;
+}
+
+async function updateCheck1(id, conclusion, output) {
+  const {
+    context
+  } = github;
+  const {
+    sha
+  } = context;
+  const {
+    owner,
+    repo
+  } = context.repo;
+  await octokit.checks.create({
+    owner,
+    repo,
+    name: 'eslint-check',
+    completed_at: new Date(),
+    status: 'completed',
+    head_sha: sha,
+    conclusion,
+    output
+  });
+}
 
 function exitWithError(err) {
   tools.log.error('Error', err.stack);
