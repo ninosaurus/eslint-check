@@ -63,7 +63,7 @@ function exitWithError(err) {
 
 async function run() {
   const octokit = new _rest.default({
-    auth: repoToken
+    auth: `token ${repoToken}`
   });
   tools.log.info(process.env);
   const {

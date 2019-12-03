@@ -44,7 +44,7 @@ function exitWithError(err) {
 
 async function run() {
   const octokit = new Octokit({
-    auth: repoToken
+    auth: `token ${repoToken}`
   });
   tools.log.info(process.env);
   const { context } = github;
