@@ -162,7 +162,8 @@ async function run() {
     }
 
     tools.log.info('Started linting...');
-    const { conclusion, output } = eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE);
+    const { conclusion, output } = eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE,
+      customDirectory);
     tools.log.info('Ended linting.');
     tools.log.info(conclusion, output.summary);
     await updateCheck(id, conclusion, output);
