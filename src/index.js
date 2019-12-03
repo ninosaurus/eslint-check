@@ -6,14 +6,12 @@ import { readdirSync, existsSync } from 'fs';
 
 import eslint from './eslint_cli';
 
-require.resolve('@actions/github');
-
 const github = require('@actions/github');
 
 const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
-
 const repoToken = core.getInput('repo-token', { required: true });
 const customDirectory = core.getInput('custom-directory', { required: true });
+
 const tools = new Toolkit();
 
 const octokit = new Octokit({
@@ -156,7 +154,7 @@ async function run() {
     }
 
     tools.log.info('Started linting...');
-    const { conclusion, output } = eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE,
+    const { conclusion, output } = await eslint(filesToLint, eslintConfigPath, GITHUB_WORKSPACE,
       customDirectory);
     tools.log.info('Ended linting.');
     tools.log.info(conclusion, output.summary);

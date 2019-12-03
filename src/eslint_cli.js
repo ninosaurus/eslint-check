@@ -6,7 +6,8 @@ const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
   .filter((dirent) => dirent.isDirectory())
   .map((dirent) => dirent.name);
 
-export default function eslint(files, eslintConfigPath, githubWorkspace) {
+export default async function eslint(files, eslintConfigPath, githubWorkspace) {
+  const { CLIEngine } = (await import(path.join(process.cwd(), 'node_modules/eslint')));
   // eslint-disable-next-line max-len
   // eslint-disable-next-line global-require,import/no-dynamic-require,import/no-extraneous-dependencies
   console.log(path.join(githubWorkspace, eslintConfigPath));
