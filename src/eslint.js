@@ -15,12 +15,10 @@ export default async function eslint(
   }
   const { CLIEngine } = (await import(path.join(process.cwd(), customDirectory,
     'node_modules/eslint')).then(((module) => (module.default))));
-  const eslintConfig = (await import(path.join(githubWorkspace, eslintConfigPath)).then(
-    ((module) => (module.default))
-  ));
+  const eslintConfig = (await import(path.join(githubWorkspace, eslintConfigPath)));
   eslintConfig.rules = {
     ...eslintConfig.rules,
-    ignoreRules
+    ...ignoreRules
   };
   const cli = new CLIEngine({
     useEslintrc: false,
