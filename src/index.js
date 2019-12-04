@@ -118,7 +118,7 @@ async function run() {
 
   try {
     const { conclusion, output } = await eslint({
-      filesToLint,
+      files: filesToLint,
       eslintConfigPath,
       githubWorkspace: GITHUB_WORKSPACE,
       customDirectory,
