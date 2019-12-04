@@ -56,7 +56,7 @@ async function run() {
   });
 
   const filesToLint = files
-    .filter((file) => CONST.EXTENSIONS_TO_LINT.has(extname(file.path)) && isFileOk(file.path))
+    .filter((file) => CONST.EXTENSIONS_TO_LINT.includes(extname(file.path)) && isFileOk(file.path))
     .map((file) => file.path);
   if (filesToLint.length < 1) {
     const extensionsString = CONST.EXTENSIONS_TO_LINT.join(', ');
