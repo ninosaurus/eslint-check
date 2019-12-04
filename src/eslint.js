@@ -13,13 +13,18 @@ export default async function eslint(
         ignoreRules[rule] = 'off';
       });
   }
-  console.log({ ignoreRules });
   const { CLIEngine } = (await import(path.join(process.cwd(), customDirectory,
     'node_modules/eslint')).then(((module) => (module.default))));
+  const eslintConfig = (await import(path.join(githubWorkspace, eslintConfigPath)).then(
+    ((module) => (module.default))
+  ));
+  eslintConfig.rules = {
+    ...eslintConfig.rules,
+    ignoreRules
+  };
   const cli = new CLIEngine({
     useEslintrc: false,
-    baseConfig: { rules: ignoreRules },
-    configFile: path.join(githubWorkspace, eslintConfigPath),
+    baseConfig: eslintConfig,
     resolvePluginsRelativeTo: path.join(githubWorkspace, customDirectory, 'node_modules'),
     extensions: ['.js', '.jsx', '.tsx']
   });

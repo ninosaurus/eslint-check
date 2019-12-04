@@ -27,18 +27,16 @@ async function eslint({
     });
   }
 
-  console.log({
-    ignoreRules
-  });
   const {
     CLIEngine
   } = await Promise.resolve().then(() => (0, _interopRequireWildcard2.default)(require(`${_path.default.join(process.cwd(), customDirectory, 'node_modules/eslint')}`))).then(module => module.default);
+  const eslintConfig = await Promise.resolve().then(() => (0, _interopRequireWildcard2.default)(require(`${_path.default.join(githubWorkspace, eslintConfigPath)}`))).then(module => module.default);
+  eslintConfig.rules = { ...eslintConfig.rules,
+    ignoreRules
+  };
   const cli = new CLIEngine({
     useEslintrc: false,
-    baseConfig: {
-      rules: ignoreRules
-    },
-    configFile: _path.default.join(githubWorkspace, eslintConfigPath),
+    baseConfig: eslintConfig,
     resolvePluginsRelativeTo: _path.default.join(githubWorkspace, customDirectory, 'node_modules'),
     extensions: ['.js', '.jsx', '.tsx']
   });
