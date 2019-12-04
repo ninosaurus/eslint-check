@@ -129,6 +129,7 @@ async function run() {
       id,
       conclusion,
       output,
+      octokit,
       repo,
       owner,
       sha
@@ -143,6 +144,7 @@ async function run() {
       conclusion: 'failure',
       repo,
       owner,
+      octokit,
       sha
     });
     exitWithError(err);
