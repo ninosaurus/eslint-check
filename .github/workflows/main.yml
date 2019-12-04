@@ -1,3 +1,5 @@
+name: Lint
+
 on: [pull_request]
 
 jobs:
@@ -27,6 +29,6 @@ jobs:
       - name: Run ESLint
         uses: ./
         with:
-          eslint-config-path: ".eslintrc"
+          eslint-config-path: ".eslintrc.json"
           custom-directory: "./"
           repo-token: ${{secrets.GITHUB_TOKEN}}
