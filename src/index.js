@@ -41,7 +41,7 @@ function exitWithError(err) {
   if (err.data) {
     console.error(err.data);
   }
-  process.exit(1);
+  core.setFailed(err.message);
 }
 
 // const gitHubUrl = 'github.com';
@@ -66,7 +66,7 @@ async function run() {
     }
   });
   const { context } = github;
-  const { owner, repo, sha } = context.repo;
+  const { owner, repo } = context.repo;
 
   const prInfo = await graphqlWithAuth(
     gql`
@@ -96,6 +96,7 @@ async function run() {
     }
   );
   // console.log(prInfo);
+  const sha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
 
   const id = await createCheck({
     owner,
@@ -118,7 +119,6 @@ async function run() {
   }
 
   try {
-    // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
     console.info('Started linting...');
 
     const { conclusion, output } = await eslint({
@@ -144,7 +144,7 @@ async function run() {
     });
 
     if (conclusion === 'failure') {
-      process.exit(78);
+      core.setFailed('ESLint found some errors');
     }
   } catch (err) {
     await updateCheck({
