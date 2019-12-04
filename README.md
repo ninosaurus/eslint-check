@@ -40,7 +40,7 @@ jobs:
         run: npm i --ignore-scripts
 
       - name: Run ESLint
-        uses: ninosaurus/eslint-check@v4
+        uses: ninosaurus/eslint-check@v5
         with:
           eslint-config-path: "./application/assets/js/.eslintrc.json"
           custom-directory: "./application"
