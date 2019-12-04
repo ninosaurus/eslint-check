@@ -1,30 +1,17 @@
+name: Node CI environment
 
-<p align="center">
-  <a href="https://github.com/actions/javascript-action"><img alt="GitHub Actions status" src="https://github.com/actions/javascript-action/workflows/test-local/badge.svg"></a>
-</p>
-
-# ESLint checker
-
-Use this action to check if changed files in pull request are matched with provided eslint rules.:rocket:
-
-## Code example
-
-```bash
 on: [pull_request]
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-    name: ESLint checker
 
     strategy:
       matrix:
-        node-version: ['12.*']
+        node-version: [10.x]
 
     steps:
-      # To use this repository's private action, you must check out the repository
-      - name: Checkout
-        uses: actions/checkout@v1
+      - uses: actions/checkout@v1
         with:
           fetch-depth: 1
 
@@ -33,14 +20,19 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: npm login
+        run:
+          npm config set //registry.npmjs.org/:_authToken=$NPM_READONLY_AUTH_TOKEN
+        env:
+          NPM_READONLY_AUTH_TOKEN: ${{ secrets.NPM_READONLY_AUTH_TOKEN }}
+
       - name: npm install
-        run: npm ci --ignore-scripts
+        working-directory: ./application
+        run: npm i --ignore-scripts
 
       - name: Run ESLint
-        uses: ./
+        uses: ninosaurus/eslint-check@v4
         with:
-          eslint-config-path: ".eslintrc"
-          custom-directory: "./"
+          eslint-config-path: "./application/assets/js/.eslintrc.json"
+          custom-directory: "./application"
           repo-token: ${{secrets.GITHUB_TOKEN}}
-
-```

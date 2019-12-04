@@ -11,9 +11,6 @@ inputs:
   eslint-config-path:
     description: 'relative path to eslint config file eg. .eslintrc'
     required: true
-  eslint-ignore-rules:
-    description: 'rules to ignore separated by , eg. "import/prefer-default-export,jsx-a11y/label-has-for"'
-    required: false
 
 runs:
   using: 'node12'
