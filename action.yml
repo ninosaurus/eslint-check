@@ -1,4 +1,5 @@
 name: 'ESLint checker'
+author: 'Valentin Hisari <hisari.valentin@gmail.com>'
 description: 'Check if changed files are properly formatted by the provided eslint rules.'
 inputs:
   repo-token:
@@ -14,3 +15,8 @@ inputs:
 runs:
   using: 'node12'
   main: 'dist/index.js'
+
+branding:
+  icon: 'check-circle'
+  color: 'blue'
+
