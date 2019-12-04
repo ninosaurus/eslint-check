@@ -2,14 +2,23 @@ import path from 'path';
 
 export default async function eslint(
   {
-    files, eslintConfigPath,
+    files, eslintConfigPath, eslintIgnoreRules,
     githubWorkspace, customDirectory, title
   }
 ) {
+  const ignoreRules = {};
+  if (eslintIgnoreRules) {
+    eslintIgnoreRules.split(',')
+      .forEach((rule) => {
+        ignoreRules[rule] = 'off';
+      });
+  }
+  console.log(ignoreRules);
   const { CLIEngine } = (await import(path.join(process.cwd(), customDirectory,
     'node_modules/eslint')).then(((module) => (module.default))));
   const cli = new CLIEngine({
     useEslintrc: false,
+    baseConfig: { rules: ignoreRules },
     configFile: path.join(githubWorkspace, eslintConfigPath),
     resolvePluginsRelativeTo: path.join(githubWorkspace, customDirectory, 'node_modules'),
     extensions: ['.js', '.jsx', '.tsx']
