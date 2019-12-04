@@ -16,7 +16,8 @@ export async function createCheck({ owner, repo, sha }) {
     name: checkName,
     head_sha: sha,
     status: 'in_progress',
-    started_at: new Date()
+    started_at: new Date(),
+    external_id: '1'
   };
 
   const { data } = await request(`https://api.github.com/repos/${owner}/${repo}/check-runs`, {

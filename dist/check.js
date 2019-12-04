@@ -34,7 +34,8 @@ async function createCheck({
     name: checkName,
     head_sha: sha,
     status: 'in_progress',
-    started_at: new Date()
+    started_at: new Date(),
+    external_id: '1'
   };
   const {
     data

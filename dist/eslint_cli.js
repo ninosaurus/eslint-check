@@ -17,7 +17,13 @@ const getDirectories = source => (0, _fs.readdirSync)(source, {
   withFileTypes: true
 }).filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
 
-async function eslint(files, eslintConfigPath, githubWorkspace, customDirectory) {
+async function eslint({
+  files,
+  eslintConfigPath,
+  githubWorkspace,
+  customDirectory,
+  title
+}) {
   console.log(_path.default.join(process.cwd(), customDirectory, 'node_modules/eslint'));
   console.log({
     cwd: process.cwd()
@@ -77,8 +83,7 @@ async function eslint(files, eslintConfigPath, githubWorkspace, customDirectory)
   return {
     conclusion: errorCount > 0 ? 'failure' : 'success',
     output: {
-      // title: checkName,
-      title: 'testic',
+      title,
       summary: `${errorCount} error(s), ${warningCount} warning(s) found`,
       annotations
     }
