@@ -1,12 +1,16 @@
-name: 'Eslint checker'
-description: 'ESLint changed files'
+name: 'ESLint checker'
+description: 'Check if changed files are properly formatted by the provided eslint rules.'
 inputs:
-  GITHUB_TOKEN:  # id of input
+  repo-token:
     description: 'github security token'
     required: true
-# outputs:
-#   time: # output will be available to future steps
-#     description: 'The message to output'
+  custom-directory:
+    description: 'relative directory to node_modules'
+    required: true
+  eslint-config-path:
+    description: 'relative path to eslint config file eg. .eslintrc'
+    required: true
+
 runs:
   using: 'node12'
   main: 'dist/index.js'

@@ -1,28 +1,19 @@
 import path from 'path';
-import { readdirSync } from 'fs';
 
-const getDirectories = (source) => readdirSync(source, { withFileTypes: true })
-  .filter((dirent) => dirent.isDirectory())
-  .map((dirent) => dirent.name);
-
-export default async function eslint(files, eslintConfigPath, githubWorkspace, customDirectory) {
-  console.log(path.join(process.cwd(), customDirectory, 'node_modules/eslint'));
-  console.log({
-    cwd: process.cwd()
-  });
-  const { CLIEngine } = (await import(path.join(process.cwd(),
-    customDirectory,
-    'node_modules/eslint')).then(((module) => {
-    console.log('resolved', module);
-    return module.default;
-  })));
+export default async function eslint(
+  {
+    files, eslintConfigPath,
+    githubWorkspace, customDirectory, title
+  }
+) {
+  const { CLIEngine } = (await import(path.join(process.cwd(), customDirectory,
+    'node_modules/eslint')).then(((module) => (module.default))));
   const cli = new CLIEngine({
     useEslintrc: false,
     configFile: path.join(githubWorkspace, eslintConfigPath),
     resolvePluginsRelativeTo: path.join(githubWorkspace, customDirectory, 'node_modules'),
     extensions: ['.js', '.jsx', '.tsx']
   });
-  console.log(files);
   const report = cli.executeOnFiles(files);
   // fixableErrorCount, fixableWarningCount are available too
   const { results, errorCount, warningCount } = report;
@@ -52,12 +43,10 @@ export default async function eslint(files, eslintConfigPath, githubWorkspace, c
       }
     }
   }
-  console.log(annotations);
   return {
     conclusion: errorCount > 0 ? 'failure' : 'success',
     output: {
-      // title: checkName,
-      title: 'testic',
+      title,
       summary: `${errorCount} error(s), ${warningCount} warning(s) found`,
       annotations
     }
