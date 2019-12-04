@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import request from './request';
+import * as CONST from './constants';
 
 const repoToken = core.getInput('repo-token', { required: true });
 const headers = {
@@ -9,11 +10,9 @@ const headers = {
   'User-Agent': 'eslint-action'
 };
 
-const checkName = 'eslint check';
-
 export async function createCheck({ owner, repo, sha }) {
   const body = {
-    name: checkName,
+    name: CONST.CHECK_NAME,
     head_sha: sha,
     status: 'in_progress',
     started_at: new Date(),
@@ -55,7 +54,7 @@ export async function updateCheck(
   }
 ) {
   const body = {
-    name: checkName,
+    name: CONST.CHECK_NAME,
     head_sha: sha,
     status: 'completed',
     completed_at: new Date(),

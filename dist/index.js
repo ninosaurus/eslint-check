@@ -6,22 +6,22 @@ var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWild
 
 var _path = require("path");
 
+var _fs = require("fs");
+
 var core = _interopRequireWildcard(require("@actions/core"));
 
-var _actionsToolkit = require("actions-toolkit");
-
-var _rest = _interopRequireDefault(require("@octokit/rest"));
-
 var github = _interopRequireWildcard(require("@actions/github"));
-
-var _fs = require("fs");
 
 var _graphql = require("@octokit/graphql");
 
 var _check = require("./check");
 
+var CONST = _interopRequireWildcard(require("./constants"));
+
 var _eslint_cli = _interopRequireDefault(require("./eslint_cli"));
 
+// import { Toolkit } from 'actions-toolkit';
+// import Octokit from '@octokit/rest';
 const eslintConfigPath = core.getInput('eslint-config-path', {
   required: true
 });
@@ -30,14 +30,12 @@ const repoToken = core.getInput('repo-token', {
 });
 const customDirectory = core.getInput('custom-directory', {
   required: true
-});
-const tools = new _actionsToolkit.Toolkit();
+}); // const tools = new Toolkit();
 
 const gql = s => s.join('');
 
 const {
-  GITHUB_WORKSPACE,
-  GITHUB_SHA
+  GITHUB_WORKSPACE
 } = process.env;
 
 const isFileOk = path => {
@@ -55,35 +53,32 @@ const isFileOk = path => {
 };
 
 function exitWithError(err) {
-  tools.log.error('Error', err.stack);
+  console.error('Error', err.stack);
 
   if (err.data) {
-    tools.log.error(err.data);
+    console.error(err.data);
   }
 
   process.exit(1);
-}
+} // const gitHubUrl = 'github.com';
 
-const gitHubUrl = 'github.com';
 
 async function run() {
-  const octokit = new _rest.default({
-    auth: `token ${repoToken}`,
-    userAgent: 'Branch Protection script',
-    baseUrl: `https://api.${gitHubUrl}`,
-    log: {
-      debug: () => {},
-      info: () => {},
-      warn: console.warn,
-      error: console.error
-    },
-    previews: ['antiope-preview']
-  });
-
+  // const octokit = new Octokit({
+  //   auth: `token ${repoToken}`,
+  //   userAgent: 'Branch Protection script',
+  //   baseUrl: `https://api.${gitHubUrl}`,
+  //   log: {
+  //     debug: () => { },
+  //     info: () => { },
+  //     warn: console.warn,
+  //     error: console.error
+  //   },
+  //   previews: ['antiope-preview']
+  // });
   const graphqlWithAuth = _graphql.graphql.defaults({
     headers: {
-      authorization: `token ${repoToken}`,
-      accept: 'application/vnd.github.antiope-preview+json'
+      authorization: `token ${repoToken}`
     }
   });
 
@@ -92,21 +87,10 @@ async function run() {
   } = github;
   const {
     owner,
-    repo
+    repo,
+    sha
   } = context.repo;
-  const id = await (0, _check.createCheck)({
-    octokit,
-    owner,
-    sha: GITHUB_SHA,
-    repo
-  });
-  tools.log.info(`Created check. Id: ${id}`);
-
-  try {
-    const {
-      context
-    } = github;
-    const prInfo = await graphqlWithAuth(gql`
+  const prInfo = await graphqlWithAuth(gql`
       query($owner: String!, $name: String!, $prNumber: Int!) {
         repository(owner: $owner, name: $name) {
           pullRequest(number: $prNumber) {
@@ -126,25 +110,28 @@ async function run() {
         }
       }
     `, {
-      owner: context.repo.owner,
-      name: context.repo.repo,
-      prNumber: context.issue.number
-    });
-    console.log(prInfo); // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
-    // tools.log.info('Commit from GraphQL:', currentSha);
+    owner: context.repo.owner,
+    name: context.repo.repo,
+    prNumber: context.issue.number
+  }); // console.log(prInfo);
 
-    const files = prInfo.repository.pullRequest.files.nodes; // tools.log.info(files);
+  const id = await (0, _check.createCheck)({
+    owner,
+    sha,
+    repo
+  });
+  console.info(`Created check. Id: ${id}`);
+  const files = prInfo.repository.pullRequest.files.nodes;
+  const filesToLint = files.filter(file => CONST.EXTENSIONS_TO_LINT.has((0, _path.extname)(file.path)) && isFileOk(file.path)).map(file => file.path);
 
-    const EXTENSIONS_TO_LINT = new Set(['.mjs', '.js', '.ts', '.jsx', '.tsx']);
-    const filesToLint = files.filter(file => EXTENSIONS_TO_LINT.has((0, _path.extname)(file.path)) && isFileOk(file.path)) // .map((file) => resolve(GITHUB_WORKSPACE, file.path));
-    .map(file => file.path);
+  if (filesToLint.length < 1) {
+    console.warn(`No files with [${[...CONST.EXTENSIONS_TO_LINT].join(', ')}] extensions added or modified in this PR, nothing to lint...`);
+    return;
+  }
 
-    if (filesToLint.length < 1) {
-      tools.log.warn(`No files with [${[...EXTENSIONS_TO_LINT].join(', ')}] extensions added or modified in this PR, nothing to lint...`);
-      return;
-    }
-
-    tools.log.info('Started linting...');
+  try {
+    // const currentSha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
+    console.info('Started linting...');
     const {
       conclusion,
       output
@@ -153,18 +140,20 @@ async function run() {
       eslintConfigPath,
       githubWorkspace: GITHUB_WORKSPACE,
       customDirectory,
-      title: context.action
+      title: CONST.CHECK_NAME
     });
-    tools.log.info('Ended linting.');
-    tools.log.info(conclusion, output.summary);
+    console.info('Ended linting.');
+    console.info({
+      conclusion,
+      summary: output.summary
+    });
     await (0, _check.updateCheck)({
       id,
       conclusion,
       output,
-      octokit,
       repo,
       owner,
-      sha: GITHUB_SHA
+      sha
     });
 
     if (conclusion === 'failure') {
@@ -174,10 +163,9 @@ async function run() {
     await (0, _check.updateCheck)({
       id,
       conclusion: 'failure',
-      octokit,
       repo,
       owner,
-      sha: GITHUB_SHA
+      sha
     });
     exitWithError(err);
   }

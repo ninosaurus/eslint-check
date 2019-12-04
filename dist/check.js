@@ -14,6 +14,8 @@ var core = _interopRequireWildcard(require("@actions/core"));
 
 var _request = _interopRequireDefault(require("./request"));
 
+var CONST = _interopRequireWildcard(require("./constants"));
+
 const repoToken = core.getInput('repo-token', {
   required: true
 });
@@ -23,7 +25,6 @@ const headers = {
   Authorization: `Bearer ${repoToken}`,
   'User-Agent': 'eslint-action'
 };
-const checkName = 'eslint check';
 
 async function createCheck({
   owner,
@@ -31,7 +32,7 @@ async function createCheck({
   sha
 }) {
   const body = {
-    name: checkName,
+    name: CONST.CHECK_NAME,
     head_sha: sha,
     status: 'in_progress',
     started_at: new Date(),
@@ -77,7 +78,7 @@ async function updateCheck({
   repo
 }) {
   const body = {
-    name: checkName,
+    name: CONST.CHECK_NAME,
     head_sha: sha,
     status: 'completed',
     completed_at: new Date(),
