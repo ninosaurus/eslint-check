@@ -1,3 +1,15 @@
+
+<p align="center">
+  <a href="https://github.com/actions/javascript-action"><img alt="GitHub Actions status" src="https://github.com/actions/javascript-action/workflows/test-local/badge.svg"></a>
+</p>
+
+# ESLint checker
+
+Use this action to check if changed files in pull request are matched with provided eslint rules.:rocket:
+
+## Code example
+
+```bash
 name: Node CI environment
 
 on: [pull_request]
@@ -36,3 +48,5 @@ jobs:
           eslint-config-path: "./application/assets/js/.eslintrc.json"
           custom-directory: "./application"
           repo-token: ${{secrets.GITHUB_TOKEN}}
+
+```
