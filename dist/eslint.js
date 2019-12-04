@@ -27,7 +27,9 @@ async function eslint({
     });
   }
 
-  console.log(ignoreRules);
+  console.log({
+    ignoreRules
+  });
   const {
     CLIEngine
   } = await Promise.resolve().then(() => (0, _interopRequireWildcard2.default)(require(`${_path.default.join(process.cwd(), customDirectory, 'node_modules/eslint')}`))).then(module => module.default);

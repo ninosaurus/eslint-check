@@ -13,7 +13,7 @@ export default async function eslint(
         ignoreRules[rule] = 'off';
       });
   }
-  console.log(ignoreRules);
+  console.log({ ignoreRules });
   const { CLIEngine } = (await import(path.join(process.cwd(), customDirectory,
     'node_modules/eslint')).then(((module) => (module.default))));
   const cli = new CLIEngine({
