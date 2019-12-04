@@ -7,3 +7,5 @@ export const EXTENSIONS_TO_LINT = new Set([
   '.jsx',
   '.tsx'
 ]);
+
+export const GITHUB_URL = 'github.com';

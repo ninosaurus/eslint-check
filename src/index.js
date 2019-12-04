@@ -1,8 +1,8 @@
 import { extname } from 'path';
 import { existsSync } from 'fs';
 import * as core from '@actions/core';
-// import { Toolkit } from 'actions-toolkit';
-// import Octokit from '@octokit/rest';
+import { Toolkit } from 'actions-toolkit';
+import Octokit from '@octokit/rest';
 import * as github from '@actions/github';
 import { graphql } from '@octokit/graphql';
 import { createCheck, updateCheck } from './check';
@@ -44,21 +44,19 @@ function exitWithError(err) {
   core.setFailed(err.message);
 }
 
-// const gitHubUrl = 'github.com';
-
 async function run() {
-  // const octokit = new Octokit({
-  //   auth: `token ${repoToken}`,
-  //   userAgent: 'Branch Protection script',
-  //   baseUrl: `https://api.${gitHubUrl}`,
-  //   log: {
-  //     debug: () => { },
-  //     info: () => { },
-  //     warn: console.warn,
-  //     error: console.error
-  //   },
-  //   previews: ['antiope-preview']
-  // });
+  const octokit = new Octokit({
+    auth: `token ${repoToken}`,
+    userAgent: 'Branch Protection script',
+    baseUrl: `https://api.${CONST.GITHUB_URL}`,
+    log: {
+      debug: () => { },
+      info: () => { },
+      warn: console.warn,
+      error: console.error
+    },
+    previews: ['antiope-preview']
+  });
 
   const graphqlWithAuth = graphql.defaults({
     headers: {
@@ -95,14 +93,16 @@ async function run() {
       prNumber: context.issue.number
     }
   );
-  // console.log(prInfo);
+
   const sha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
 
   const id = await createCheck({
     owner,
     sha,
+    octokit,
     repo
   });
+
   console.info(`Created check. Id: ${id}`);
   const files = prInfo.repository.pullRequest.files.nodes;
 
@@ -110,17 +110,13 @@ async function run() {
     .filter((file) => CONST.EXTENSIONS_TO_LINT.has(extname(file.path)) && isFileOk(file.path))
     .map((file) => file.path);
   if (filesToLint.length < 1) {
+    const extensionsString = CONST.EXTENSIONS_TO_LINT.join(', ');
     console.warn(
-      `No files with [${[...CONST.EXTENSIONS_TO_LINT].join(
-        ', '
-      )}] extensions added or modified in this PR, nothing to lint...`
-    );
+      `No files with [${extensionsString}] extensions added or modified in this PR, nothing to lint...`);
     return;
   }
 
   try {
-    console.info('Started linting...');
-
     const { conclusion, output } = await eslint({
       filesToLint,
       eslintConfigPath,
@@ -129,11 +125,6 @@ async function run() {
       title: CONST.CHECK_NAME
     });
 
-    console.info('Ended linting.');
-    console.info({
-      conclusion,
-      summary: output.summary
-    });
     await updateCheck({
       id,
       conclusion,
