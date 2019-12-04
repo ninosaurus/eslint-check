@@ -1,3 +1,5 @@
+name: Lint
+
 on: [pull_request]
 
 jobs:
@@ -10,7 +12,6 @@ jobs:
         node-version: ['12.*']
 
     steps:
-      # To use this repository's private action, you must check out the repository
       - name: Checkout
         uses: actions/checkout@v1
         with:
@@ -27,6 +28,6 @@ jobs:
       - name: Run ESLint
         uses: ./
         with:
-          eslint-config-path: ".eslintrc"
+          eslint-config-path: ".eslintrc.json"
           custom-directory: "./"
           repo-token: ${{secrets.GITHUB_TOKEN}}
