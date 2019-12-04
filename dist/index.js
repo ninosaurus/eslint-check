@@ -31,6 +31,9 @@ const repoToken = core.getInput('repo-token', {
 const customDirectory = core.getInput('custom-directory', {
   required: true
 });
+const eslintIgnoreRules = core.getInput('eslint-ignore-rules', {
+  required: false
+});
 const {
   GITHUB_WORKSPACE
 } = process.env;
@@ -90,6 +93,7 @@ async function run() {
       output
     } = await (0, _eslint.default)({
       files: filesToLint,
+      eslintIgnoreRules,
       eslintConfigPath,
       githubWorkspace: GITHUB_WORKSPACE,
       customDirectory,
