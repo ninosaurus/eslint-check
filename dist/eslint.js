@@ -54,6 +54,11 @@ async function eslint({
       const annotationLevel = levels[severity];
 
       if (!cli.isPathIgnored(filePath)) {
+        // current limit is 50 annotations per request
+        if (annotations.length >= 50) {
+          break;
+        }
+
         annotations.push({
           path,
           start_line: line,

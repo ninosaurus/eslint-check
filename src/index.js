@@ -3,9 +3,16 @@ import * as core from '@actions/core';
 import Octokit from '@octokit/rest';
 import * as github from '@actions/github';
 import { graphql } from '@octokit/graphql';
-import { createCheck, updateCheck, getPullRequestInfo } from './github';
+import {
+  createCheck,
+  updateCheck,
+  getPullRequestInfo
+} from './github';
 import * as CONST from './constants';
-import { exitWithError, isFileOk } from './utils';
+import {
+  exitWithError,
+  isFileOk
+} from './utils';
 import eslint from './eslint';
 
 const eslintConfigPath = core.getInput('eslint-config-path', { required: true });
@@ -22,8 +29,10 @@ async function run() {
     userAgent: 'Branch Protection script',
     baseUrl: `https://api.${CONST.GITHUB_URL}`,
     log: {
-      debug: () => { },
-      info: () => { },
+      debug: () => {
+      },
+      info: () => {
+      },
       warn: console.warn,
       error: console.error
     },
