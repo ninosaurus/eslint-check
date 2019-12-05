@@ -70,12 +70,6 @@ async function run() {
   });
   const sha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
   const files = prInfo.repository.pullRequest.files.nodes;
-  const id = await (0, _github2.createCheck)({
-    owner,
-    sha,
-    octokit,
-    repo
-  });
   const filesToLint = files.filter(file => CONST.EXTENSIONS_TO_LINT.includes((0, _path.extname)(file.path)) && (0, _utils.isFileOk)(file.path)).map(file => file.path);
 
   if (filesToLint.length < 1) {
@@ -83,6 +77,13 @@ async function run() {
     console.warn(`No files with [${extensionsString}] extensions added or modified in this PR, nothing to lint...`);
     return;
   }
+
+  const id = await (0, _github2.createCheck)({
+    owner,
+    sha,
+    octokit,
+    repo
+  });
 
   try {
     const {

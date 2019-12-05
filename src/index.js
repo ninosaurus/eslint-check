@@ -57,13 +57,6 @@ async function run() {
   const sha = prInfo.repository.pullRequest.commits.nodes[0].commit.oid;
   const files = prInfo.repository.pullRequest.files.nodes;
 
-  const id = await createCheck({
-    owner,
-    sha,
-    octokit,
-    repo
-  });
-
   const filesToLint = files
     .filter((file) => CONST.EXTENSIONS_TO_LINT.includes(extname(file.path)) && isFileOk(file.path))
     .map((file) => file.path);
@@ -74,6 +67,13 @@ async function run() {
     );
     return;
   }
+
+  const id = await createCheck({
+    owner,
+    sha,
+    octokit,
+    repo
+  });
 
   try {
     const { conclusion, output } = await eslint({
