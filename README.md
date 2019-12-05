@@ -1,8 +1,6 @@
-name: Node CI environment
+# ESLint checker :white_check_mark:
 
-# ESLint checker
-
-Use this action to check if changed files in pull request are matched with provided eslint rules.:rocket:
+Use this action to check if changed files in pull request are matched with provided eslint rules. :rocket:
 
 ## Code example
 
