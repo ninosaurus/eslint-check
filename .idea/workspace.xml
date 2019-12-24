@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="3b86da0b-c5d4-40ab-a480-efbb5a173832" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/action.yml" beforeDir="false" afterPath="$PROJECT_DIR$/action.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/eslint.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/eslint.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,6 +21,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1UHe5FhtOsZaTyvYb1mYpJcCOpp" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -34,15 +41,15 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="settings.javascript.linters.eslint" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
+  <component name="ServiceViewManager">
+    <option name="viewStates">
       <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
       </list>
     </option>
   </component>
@@ -58,11 +65,26 @@
       <updated>1575017762778</updated>
       <workItem from="1575017763927" duration="13000" />
       <workItem from="1575466451430" duration="283000" />
+      <workItem from="1575640578335" duration="55000" />
+      <workItem from="1575640658836" duration="714000" />
+      <workItem from="1575969301841" duration="306000" />
+      <workItem from="1575970273077" duration="1210000" />
+      <workItem from="1577199482880" duration="98000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -76,5 +98,24 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="789" y="359" key="SettingsEditor" timestamp="1575643283527">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="789" y="359" key="SettingsEditor/2560.360.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1575643283527" />
+    <state x="100" y="100" width="2360" height="1240" key="VCS.FileHistoryDialog" timestamp="1575643226126">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="100" y="100" width="2360" height="1240" key="VCS.FileHistoryDialog/2560.383.1920.1057/0.23.2560.1417@0.23.2560.1417" timestamp="1575643226126" />
+    <state x="3279" y="774" key="com.intellij.ide.util.TipDialog" timestamp="1575970351813">
+      <screen x="2560" y="360" width="1920" height="1080" />
+    </state>
+    <state x="3279" y="774" key="com.intellij.ide.util.TipDialog/0.0.2560.1440/2560.360.1920.1080@2560.360.1920.1080" timestamp="1575970351813" />
+    <state x="959" y="552" key="com.intellij.ide.util.TipDialog/2560.360.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1575643190612" />
+    <state x="945" y="331" width="670" height="676" key="search.everywhere.popup" timestamp="1575643194578">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="945" y="331" width="670" height="676" key="search.everywhere.popup/2560.360.1920.1080/0.0.2560.1440@0.0.2560.1440" timestamp="1575643194578" />
   </component>
 </project>

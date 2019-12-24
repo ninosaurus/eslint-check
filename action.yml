@@ -11,6 +11,9 @@ inputs:
   eslint-config-path:
     description: 'relative path to eslint config file eg. .eslintrc'
     required: true
+  eslintignore-path:
+    description: 'relative path to .eslintignore'
+    required: true
 
 runs:
   using: 'node12'

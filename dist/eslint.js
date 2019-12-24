@@ -14,6 +14,7 @@ var _path = _interopRequireDefault(require("path"));
 async function eslint({
   files,
   eslintConfigPath,
+  eslintignorePath,
   githubWorkspace,
   customDirectory,
   title
@@ -24,6 +25,8 @@ async function eslint({
   const cli = new CLIEngine({
     useEslintrc: false,
     configFile: _path.default.join(githubWorkspace, eslintConfigPath),
+    ignore: true,
+    ignorePath: eslintignorePath,
     resolvePluginsRelativeTo: _path.default.join(githubWorkspace, customDirectory, 'node_modules'),
     extensions: ['.js', '.jsx', '.tsx']
   });

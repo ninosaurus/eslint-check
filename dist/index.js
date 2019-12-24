@@ -25,6 +25,9 @@ var _eslint = _interopRequireDefault(require("./eslint"));
 const eslintConfigPath = core.getInput('eslint-config-path', {
   required: true
 });
+const eslintignorePath = core.getInput('eslintignore-path', {
+  required: true
+});
 const repoToken = core.getInput('repo-token', {
   required: true
 });
@@ -92,6 +95,7 @@ async function run() {
     } = await (0, _eslint.default)({
       files: filesToLint,
       eslintConfigPath,
+      eslintignorePath,
       githubWorkspace: GITHUB_WORKSPACE,
       customDirectory,
       title: CONST.CHECK_NAME
