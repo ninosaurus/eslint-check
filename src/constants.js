@@ -5,8 +5,7 @@ export const EXTENSIONS_TO_LINT = [
   '.js',
   '.ts',
   '.jsx',
-  '.tsx',
-  '.vue'
+  '.tsx'
 ];
 
 export const GITHUB_URL = 'github.com';
